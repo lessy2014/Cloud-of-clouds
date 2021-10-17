@@ -4,7 +4,11 @@
     <projectFile>COC.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f92662b-c0bb-469d-9047-1e3bdf440809" name="Default Changelist" comment="" />
+    <list default="true" id="1f92662b-c0bb-469d-9047-1e3bdf440809" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.COC.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.COC.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COC.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/COC.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +16,16 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/C2BDF592-40F3-42C6-8757-EC75B2EB5F3E/20/b689f89a/OAuth2.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Program.cs" />
+      </list>
+    </option>
   </component>
   <component name="ProjectId" id="1zdDfW33vX57zwMIgYAypn56vGj" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -54,33 +68,34 @@
       <option name="presentableId" value="Default" />
       <updated>1634469189536</updated>
       <workItem from="1634469204994" duration="107000" />
+      <workItem from="1634469955424" duration="11241000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="274" key="GridCell.Tab.0.bottom" timestamp="1634469317952">
+    <state width="1877" height="274" key="GridCell.Tab.0.bottom" timestamp="1634483066117">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="274" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1634469317952" />
-    <state width="1877" height="274" key="GridCell.Tab.0.center" timestamp="1634469317952">
+    <state width="1877" height="274" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1634483066117" />
+    <state width="1877" height="274" key="GridCell.Tab.0.center" timestamp="1634483066117">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="274" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1634469317952" />
-    <state width="1877" height="274" key="GridCell.Tab.0.left" timestamp="1634469317952">
+    <state width="1877" height="274" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1634483066117" />
+    <state width="1877" height="274" key="GridCell.Tab.0.left" timestamp="1634483066117">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="274" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1634469317952" />
-    <state width="1877" height="274" key="GridCell.Tab.0.right" timestamp="1634469317952">
+    <state width="1877" height="274" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1634483066117" />
+    <state width="1877" height="274" key="GridCell.Tab.0.right" timestamp="1634483066117">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="274" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1634469317952" />
+    <state width="1877" height="274" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1634483066117" />
   </component>
 </project>

@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="chilkat-x64" Version="9.5.0.88" />
       <PackageReference Include="Dropbox.Api" Version="6.17.0" />
     </ItemGroup>
 
