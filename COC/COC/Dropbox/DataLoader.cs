@@ -20,96 +20,69 @@ namespace COC.Dropbox
         private Dictionary<string, string> mailToToken;
         private string currentToken;
         private List<string> tokens;
-        private string name;
         private string email;
-
-        private string path;
-        // private string country;
-        private List<Metadata> currentFolder;
-        private string folder;
+        private List<Metadata> currentFolderContent;
+        private string pathInDropbox;
 
         public DataLoader(Dictionary<string, string> mailToToken)
         {
             this.mailToToken = mailToToken;
         }
-        
-        public void GetFolderData(string folder="")
+
+        private void SetupPath(string folderPath)
         {
-            this.folder = folder;
-            var task = Task.Run(Run);
-             
+            var folderInPath = folderPath.Split('/');
+            email = folderInPath[0];
+            if (folderInPath.Length == 1)
+            {
+                pathInDropbox = "";
+            }
+            else if (pathInDropbox.Split('/')[0].Length != 0)
+            {
+                pathInDropbox = folderPath.Substring(folderInPath[0].Length);
+            }
+        }
+        
+        public Infrastructure.Folder GetFolder(string folderPath="")
+        {
+            SetupPath(folderPath);
+            var task = Task.Run(AsyncGetFolderData);
             try
             {
                 task.Wait();
-                if (path != "")
-                {
-                    Console.Write("Current folder: ");
-                    Console.WriteLine(path);
-                    Console.WriteLine();
-                    foreach (var item in currentFolder)
-                    {
-                        Console.WriteLine(item.Name);
-                    }
-                }
-                Console.WriteLine();
+                return new Infrastructure.Folder(email+pathInDropbox, currentFolderContent);
 
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+
+            throw new Exception("Can not get folder data");
+
         }
-        
-        public async Task Run()
+
+        private async Task AsyncGetFolderData()
         {
-            if (folder == "")
+            currentToken = mailToToken[email];
+            using (var dropboxClient = new DropboxClient(currentToken))
             {
-                /*path = "";
-                Console.WriteLine("Current folder: root");
-                Console.WriteLine();
-                foreach (var token in tokens)
-                    using (var dbc = new DropboxClient(token))
-                    {
-                        var id = await dbc.Users.GetCurrentAccountAsync();
-                        mailsToTokens.Add(id.Email, token);
-                        Console.WriteLine(id.Email);
-                    }*/
-            }
-            else
-            {
-                if (folder.Split('/').Length == 1)
+                var id = await dropboxClient.Users.GetCurrentAccountAsync();
+                email = id.Email;
+                try
                 {
-                    currentToken = mailToToken[folder];
-                    folder = "";
-                }
-                else if (folder.Split('/')[0].Length != 0)
-                {
-                    var length = folder.Split('/')[0].Length;
-                    currentToken = mailToToken[folder.Split('/')[0]];
-                    folder = folder.Remove(0, length);
-                }
-                using (var dbc = new DropboxClient(currentToken))
-                {
-                    var id = await dbc.Users.GetCurrentAccountAsync();
-                    name = id.Name.DisplayName;
-                    email = id.Email;
-                    path = email + folder;
-                    try
+                    var list = await dropboxClient.Files.ListFolderAsync(pathInDropbox);
+                    currentFolderContent = new List<Metadata>();
+                    foreach (var item in list.Entries)
                     {
-                        var list = await dbc.Files.ListFolderAsync(folder);
-                        currentFolder = new List<Metadata>();
-                        foreach (var item in list.Entries)
-                        {
-                            currentFolder.Add(item);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Whatever problem happened" + e);
+                        currentFolderContent.Add(item);
                     }
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Whatever problem happened" + e);
+                }
             }
-            
         }
     }
 }

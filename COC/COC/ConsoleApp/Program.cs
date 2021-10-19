@@ -19,11 +19,13 @@ namespace COC.ConsoleApp
         {
             string token1 = "KRvzqGRO6vAAAAAAAAAAAc2uCm6q-u2hLD8e-IhvyDrRIX6FESDBqyp90dY31HvU";
             string token2 = "kjAhtJMFcp4AAAAAAAAAAX_wzLndk7IlBAYVeYs0yLmkq_d_0Kt_wdQm5lvVVmNJ";
-            TokenGetter.AddToken(token1);
-            TokenGetter.AddToken(token2);
-            var dataLoader = new DataLoader(TokenGetter.mailToToken);
-            dataLoader.GetFolderData("sigmarblessme@gmail.com");
-            dataLoader.GetFolderData("sigmarblessme@gmail.com/Folder1");
+            TokenStorage.AddToken(token1);
+            TokenStorage.AddToken(token2);
+            var dataLoader = new DataLoader(TokenStorage.mailToToken);
+            var folder1 = dataLoader.GetFolder("bir.ssss@mail.ru");
+            var folder2 = dataLoader.GetFolder("sigmarblessme@gmail.com/Folder1");
+            OutputManager.WriteFolderData(folder1);
+            OutputManager.WriteFolderData(folder2);
         }
     }
 }

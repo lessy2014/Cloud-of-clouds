@@ -13,9 +13,9 @@ using Dropbox.Api.Users;
 
 namespace COC.Dropbox
 {    
-    public static class TokenGetter
+    public static class TokenStorage
     {
-        public static Dictionary<string, string> mailToToken = new Dictionary<string, string>();
+        public static Dictionary<string, string> mailToToken = new();
         public static string GetToken()
         {
             Chilkat.OAuth2 oauth2 = new Chilkat.OAuth2();
@@ -39,28 +39,24 @@ namespace COC.Dropbox
                 oauth2.SleepMs(100);
                 numMsWaited = numMsWaited + 100;
             }
-            
-            if (oauth2.AuthFlowState < 3) {
-                oauth2.Cancel();
-                Console.WriteLine("No response from the browser!");
-                return "";
-            }
-            
-            if (oauth2.AuthFlowState == 5) {
-                Console.WriteLine("OAuth2 failed to complete.");
-                Console.WriteLine(oauth2.FailureInfo);
-                return "";
-            }
-         
-            if (oauth2.AuthFlowState == 4) {
-                Console.WriteLine("OAuth2 authorization was denied.");
-                Console.WriteLine(oauth2.AccessTokenResponse);
-                return "";
-            }
-         
-            if (oauth2.AuthFlowState != 3) {
-                Console.WriteLine("Unexpected AuthFlowState:" + Convert.ToString(oauth2.AuthFlowState));
-                return "";
+
+            switch (oauth2.AuthFlowState)
+            {
+                case <3:
+                    oauth2.Cancel();
+                    Console.WriteLine("No response from the browser!");
+                    return "";
+                case 5:
+                    Console.WriteLine("OAuth2 failed to complete.");
+                    Console.WriteLine(oauth2.FailureInfo);
+                    return "";
+                case 4:
+                    Console.WriteLine("OAuth2 authorization was denied.");
+                    Console.WriteLine(oauth2.AccessTokenResponse);
+                    return "";
+                case >5:
+                    Console.WriteLine("Unexpected AuthFlowState:" + Convert.ToString(oauth2.AuthFlowState));
+                    return "";
             }
             return oauth2.AccessToken;
         }
