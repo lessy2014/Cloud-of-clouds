@@ -18,71 +18,54 @@ namespace COC.Dropbox
     public class DataLoader
     {
         private Dictionary<string, string> mailToToken;
-        private string currentToken;
-        private List<string> tokens;
-        private string email;
-        private List<Metadata> currentFolderContent;
-        private string pathInDropbox;
 
-        public DataLoader(Dictionary<string, string> mailToToken)
-        {
-            this.mailToToken = mailToToken;
-        }
-
-        private void SetupPath(string folderPath)
-        {
-            var folderInPath = folderPath.Split('/');
-            email = folderInPath[0];
-            if (folderInPath.Length == 1)
-            {
-                pathInDropbox = "";
-            }
-            else if (pathInDropbox.Split('/')[0].Length != 0)
-            {
-                pathInDropbox = folderPath.Substring(folderInPath[0].Length);
-            }
-        }
-        
         public Infrastructure.Folder GetFolder(string folderPath="")
         {
-            SetupPath(folderPath);
-            var task = Task.Run(AsyncGetFolderData);
+            var dropboxPath = GetDropboxPath(folderPath);
+            var email = GetEmail(folderPath);
+            var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));
             try
             {
-                task.Wait();
-                return new Infrastructure.Folder(email+pathInDropbox, currentFolderContent);
-
+                folderContentTask.Wait();
+                return new Infrastructure.Folder(email+dropboxPath, folderContentTask.Result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-
             throw new Exception("Can not get folder data");
-
+        }
+        
+        private async Task<List<Metadata>> AsyncGetFolderData(string dropboxPath, string email)
+        {
+            var token = mailToToken[email];
+            using var dropboxClient = new DropboxClient(token);
+            try
+            {
+                var list = await dropboxClient.Files.ListFolderAsync(dropboxPath);
+                return list.Entries.ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Whatever problem happened" + e);
+            }
+            throw new Exception("Can not get folder data");
+        }
+        
+        private static string GetDropboxPath(string folderPath)
+        {
+            var folderInPath = folderPath.Split('/');
+            return folderInPath.Length == 1 ? "" : folderPath.Substring(folderInPath[0].Length);
         }
 
-        private async Task AsyncGetFolderData()
+        private static string GetEmail(string folderPath)
         {
-            currentToken = mailToToken[email];
-            using (var dropboxClient = new DropboxClient(currentToken))
-            {
-                var id = await dropboxClient.Users.GetCurrentAccountAsync();
-                email = id.Email;
-                try
-                {
-                    var list = await dropboxClient.Files.ListFolderAsync(pathInDropbox);
-                    currentFolderContent = new List<Metadata>();
-                    foreach (var item in list.Entries)
-                    {
-                        currentFolderContent.Add(item);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Whatever problem happened" + e);
-                }
-            }
+            return folderPath.Split('/')[0];
+        }
+        
+        public DataLoader(Dictionary<string, string> mailToToken)
+        {
+            this.mailToToken = mailToToken;
         }
     }
 }
