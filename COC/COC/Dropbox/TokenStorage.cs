@@ -15,18 +15,20 @@ namespace COC.Dropbox
 {    
     public static class TokenStorage
     {
-        public static Dictionary<string, string> mailToToken = new();
+        public static readonly Dictionary<string, string> MailToToken = new Dictionary<string, string>();
         public static string GetToken()
         {
-            Chilkat.OAuth2 oauth2 = new Chilkat.OAuth2();
-            oauth2.ListenPort = 3017;
-            oauth2.AuthorizationEndpoint = "https://www.dropbox.com/oauth2/authorize";
-            oauth2.TokenEndpoint = "https://api.dropboxapi.com/oauth2/token";
-            
-            oauth2.ClientId = "ryj3w3kellyrapb";
-            oauth2.ClientSecret = "1ukvw813zamkzla";
-            oauth2.CodeChallenge = false;
-            
+            Chilkat.OAuth2 oauth2 = new Chilkat.OAuth2
+            {
+                ListenPort = 3017,
+                AuthorizationEndpoint = "https://www.dropbox.com/oauth2/authorize",
+                TokenEndpoint = "https://api.dropboxapi.com/oauth2/token",
+                ClientId = "ryj3w3kellyrapb",
+                ClientSecret = "1ukvw813zamkzla",
+                CodeChallenge = false
+            };
+
+
             string url = oauth2.StartAuth();
             if (oauth2.LastMethodSuccess != true) {
                 Console.WriteLine(oauth2.LastErrorText);
@@ -69,7 +71,7 @@ namespace COC.Dropbox
         }
         public static void AddToken(string token)
         {
-            mailToToken[GetMail(token)] = token;
+            MailToToken[GetMail(token)] = token;
         }
     }
 }

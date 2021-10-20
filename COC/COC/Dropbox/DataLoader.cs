@@ -17,10 +17,12 @@ namespace COC.Dropbox
     
     public class DataLoader
     {
-        private Dictionary<string, string> mailToToken;
+        private readonly Dictionary<string, string> mailToToken;
+        // private string currentEmail;
 
         public Infrastructure.Folder GetFolder(string folderPath="")
         {
+            //TODO if folderPath=="" return root-folder;
             var dropboxPath = GetDropboxPath(folderPath);
             var email = GetEmail(folderPath);
             var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));
@@ -58,9 +60,14 @@ namespace COC.Dropbox
             return folderInPath.Length == 1 ? "" : folderPath.Substring(folderInPath[0].Length);
         }
 
-        private static string GetEmail(string folderPath)
+        private string GetEmail(string folderPath)
         {
             return folderPath.Split('/')[0];
+            //TODO работа с файлами последней использованной почты без повторного указания 
+            // var email = folderPath.Split('/')[0];
+            // if (email != "")
+            //     currentEmail = email;
+            // return currentEmail;
         }
         
         public DataLoader(Dictionary<string, string> mailToToken)
