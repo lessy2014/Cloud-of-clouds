@@ -22,12 +22,18 @@ namespace COC.ConsoleApp
             TokenStorage.AddToken(token1);
             TokenStorage.AddToken(token2);
             var dataLoader = new DataLoader(TokenStorage.MailToToken);
-            var folder1 = dataLoader.GetFolder("bir.ssss@mail.ru");
-            var folder2 = dataLoader.GetFolder("sigmarblessme@gmail.com/Folder1");
-            // var folder3 = dataLoader.GetFolder("/Folder1"); TODO Не работает, и не должно
-            // // var folder4 = dataLoader.GetFolder(""); TODO Не работает, и не должно
+            dataLoader.GetFolders();
+            OutputManager.WriteRootFolder();
+            var folder1 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru");
+            // var folder2 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com/Folder1");
+            //TODO Работает, но нельзя вывести
+            //TODO Folder1 не имеет Content. 
+            //TODO Пока при получении данных данные собираются не полностью
+            var folder3 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com");
+            //var folder4 = Infrastructure.FileSystemManager.GetFolder("/Folder1");
+            //TODO Не работает по причинам выше
             OutputManager.WriteFolderData(folder1);
-            OutputManager.WriteFolderData(folder2);
+            OutputManager.WriteFolderData(folder3);
         }
     }
 }

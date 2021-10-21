@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using Dropbox.Api;
 using System.Threading.Tasks;
+using COC.Infrastructure;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 
@@ -20,21 +21,44 @@ namespace COC.Dropbox
         private readonly Dictionary<string, string> mailToToken;
         // private string currentEmail;
 
-        public Infrastructure.Folder GetFolder(string folderPath="")
+        //public Infrastructure.Folder GetFolder(string folderPath)
+        //{
+        //    var dropboxPath = GetDropboxPath(folderPath);
+        //    var email = GetEmail(folderPath);
+        //    var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));
+        //    try
+        //    {
+        //        folderContentTask.Wait();
+        //        return new Infrastructure.Folder(email+dropboxPath, folderContentTask.Result);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //    }
+        //    throw new Exception("Can not get folder data");
+        //}
+
+        public void GetFolders()
         {
-            var dropboxPath = GetDropboxPath(folderPath);
-            var email = GetEmail(folderPath);
-            var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));
-            try
+            var root = new Dictionary<string, Folder>();
+            foreach (var mailTokenPair in mailToToken)
             {
-                folderContentTask.Wait();
-                return new Infrastructure.Folder(email+dropboxPath, folderContentTask.Result);
+                var mail = mailTokenPair.Key;
+                var token = mailTokenPair.Value;
+                using var dropboxClient = new DropboxClient(token);
+                var list = dropboxClient.Files.ListFolderAsync("").Result.Entries.ToList();
+                var content = new Dictionary<string, IFileSystemUnit>();
+                foreach (var metadata in list)
+                {
+                    if (metadata.IsFolder)
+                        content.Add(metadata.Name, new Folder(mail + '/' +metadata.Name)); //TODO Заполнять контент каждой folder
+                    else
+                        content.Add(metadata.Name, new Infrastructure.File(mail + '/' +metadata.Name));
+                }
+                var folder = new Folder(mail, list, content);
+                root.Add(folder.Name, folder);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            throw new Exception("Can not get folder data");
+            Infrastructure.Folder.SetRoot(root);
         }
         
         private async Task<List<Metadata>> AsyncGetFolderData(string dropboxPath, string email)

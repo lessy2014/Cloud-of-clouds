@@ -22,7 +22,16 @@ namespace COC.ConsoleApp
             Console.WriteLine($"Current folder: {folder.Path}\n");
             foreach (var item in folder.Content)
             {
-                Console.WriteLine(item.Name);
+                Console.WriteLine(item.Key);
+            }
+        }
+
+        public static void WriteRootFolder()
+        {
+            Console.WriteLine("Current folder: Root \n");
+            foreach (var folder in Infrastructure.Folder.root)
+            {
+                Console.WriteLine(folder.Value.Name);
             }
         }
     }
