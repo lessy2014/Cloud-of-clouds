@@ -22,7 +22,6 @@ namespace COC.Dropbox
 
         public Infrastructure.Folder GetFolder(string folderPath="")
         {
-            //TODO if folderPath=="" return root-folder;
             var dropboxPath = GetDropboxPath(folderPath);
             var email = GetEmail(folderPath);
             var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));

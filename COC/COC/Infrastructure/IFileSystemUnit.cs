@@ -1,8 +1,8 @@
 namespace COC.Infrastructure
 {
-    public class IFileSystemUnit
+    public interface IFileSystemUnit
     {
-        public string Path;
-        public string Name;
+        public string Path { get; set; }
+        public string Name { get; set; }
     }
 }
