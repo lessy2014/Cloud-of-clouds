@@ -29,7 +29,7 @@ namespace COC.ConsoleApp
         public static void WriteRootFolder()
         {
             Console.WriteLine("Current folder: Root \n");
-            foreach (var folder in Infrastructure.Folder.root)
+            foreach (var folder in Folder.root.Content)
             {
                 Console.WriteLine(folder.Value.Name);
             }

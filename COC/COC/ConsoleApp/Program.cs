@@ -25,15 +25,16 @@ namespace COC.ConsoleApp
             dataLoader.GetFolders();
             OutputManager.WriteRootFolder();
             var folder1 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru");
-            // var folder2 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com/Folder1");
-            //TODO Работает, но нельзя вывести
-            //TODO Folder1 не имеет Content. 
-            //TODO Пока при получении данных данные собираются не полностью
+            var folder2 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com/Folder1");
+            var folder5 = Infrastructure.FileSystemManager.GetFolder(""); 
             var folder3 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com");
-            //var folder4 = Infrastructure.FileSystemManager.GetFolder("/Folder1");
+            var folder4 = Infrastructure.FileSystemManager.GetFolder("/Folder1");
             //TODO Не работает по причинам выше
             OutputManager.WriteFolderData(folder1);
-            OutputManager.WriteFolderData(folder3);
+            // OutputManager.WriteFolderData(folder3);
+            OutputManager.WriteFolderData(folder2);
+            OutputManager.WriteFolderData(folder4);
+            OutputManager.WriteFolderData(folder5);
         }
     }
 }

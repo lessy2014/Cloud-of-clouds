@@ -9,8 +9,10 @@ namespace COC.Infrastructure
 
         public static Folder GetFolder(string path)
         {
+            if (path == "")
+                return Folder.root;
             var splittedPath = SplitPath(path);
-            var folder = Folder.root[splittedPath[0]];
+            var folder = (Folder)Folder.root.Content[splittedPath[0]];
             for (var i = 1; i < splittedPath.Length; i++)
             {
                 folder = (Folder)folder.Content[splittedPath[i]];

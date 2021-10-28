@@ -19,80 +19,39 @@ namespace COC.Dropbox
     public class DataLoader
     {
         private readonly Dictionary<string, string> mailToToken;
-        // private string currentEmail;
-
-        //public Infrastructure.Folder GetFolder(string folderPath)
-        //{
-        //    var dropboxPath = GetDropboxPath(folderPath);
-        //    var email = GetEmail(folderPath);
-        //    var folderContentTask = Task.Run(() => AsyncGetFolderData(dropboxPath, email));
-        //    try
-        //    {
-        //        folderContentTask.Wait();
-        //        return new Infrastructure.Folder(email+dropboxPath, folderContentTask.Result);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //    }
-        //    throw new Exception("Can not get folder data");
-        //}
 
         public void GetFolders()
         {
-            var root = new Dictionary<string, Folder>();
+            var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var mailTokenPair in mailToToken)
             {
                 var mail = mailTokenPair.Key;
                 var token = mailTokenPair.Value;
                 using var dropboxClient = new DropboxClient(token);
-                var list = dropboxClient.Files.ListFolderAsync("").Result.Entries.ToList();
-                var content = new Dictionary<string, IFileSystemUnit>();
-                foreach (var metadata in list)
-                {
-                    if (metadata.IsFolder)
-                        content.Add(metadata.Name, new Folder(mail + '/' +metadata.Name)); //TODO Заполнять контент каждой folder
-                    else
-                        content.Add(metadata.Name, new Infrastructure.File(mail + '/' +metadata.Name));
-                }
-                var folder = new Folder(mail, list, content);
-                root.Add(folder.Name, folder);
+                var rootFolder = GetFolder(mail, "", dropboxClient);
+                root.Content.Add(rootFolder.Name, rootFolder);
             }
-            Infrastructure.Folder.SetRoot(root);
-        }
-        
-        private async Task<List<Metadata>> AsyncGetFolderData(string dropboxPath, string email)
-        {
-            var token = mailToToken[email];
-            using var dropboxClient = new DropboxClient(token);
-            try
-            {
-                var list = await dropboxClient.Files.ListFolderAsync(dropboxPath);
-                return list.Entries.ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Whatever problem happened" + e);
-            }
-            throw new Exception("Can not get folder data");
-        }
-        
-        private static string GetDropboxPath(string folderPath)
-        {
-            var folderInPath = folderPath.Split('/');
-            return folderInPath.Length == 1 ? "" : folderPath.Substring(folderInPath[0].Length);
+            Folder.SetRoot(root);
         }
 
-        private string GetEmail(string folderPath)
+        public Folder GetFolder(string email, string path, DropboxClient client)
         {
-            return folderPath.Split('/')[0];
-            //TODO работа с файлами последней использованной почты без повторного указания 
-            // var email = folderPath.Split('/')[0];
-            // if (email != "")
-            //     currentEmail = email;
-            // return currentEmail;
+            var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
+            var content = new Dictionary<string, IFileSystemUnit>();
+            foreach (var metadata in metadataList)
+            {
+                if (metadata.IsFolder)
+                {
+                    var folderInside = GetFolder(email, path + '/' + metadata.Name, client);
+                    content.Add(metadata.Name,folderInside);
+                }
+                else
+                    content.Add(metadata.Name, new Infrastructure.File(path + '/' +metadata.Name));
+            }
+            return new Folder(email + path, content);
         }
-        
+
+
         public DataLoader(Dictionary<string, string> mailToToken)
         {
             this.mailToToken = mailToToken;

@@ -6,11 +6,12 @@ namespace COC.Infrastructure
 {
     public class Folder: IFileSystemUnit
     {
-        public List<Metadata> MetadataContent;
+        // public List<Metadata> MetadataContent;
 
         public Dictionary<string, IFileSystemUnit> Content;
 
-        public static Dictionary<string, Folder> root;
+        // public static Dictionary<string, Folder> root;
+        public static Folder root;
         public string Path { get; set; }
         public string Name { get; set; }
 
@@ -20,11 +21,11 @@ namespace COC.Infrastructure
             Name = path.Split('/').LastOrDefault();
         }
 
-        public Folder(string path, List<Metadata> metadataContent, Dictionary<string, IFileSystemUnit> content)
+        public Folder(string path, Dictionary<string, IFileSystemUnit> content)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
-            MetadataContent = metadataContent;
+            // MetadataContent = metadataContent;
             Content = content;
         }
 
@@ -33,7 +34,7 @@ namespace COC.Infrastructure
             Content = content;
         }
 
-        public static void SetRoot(Dictionary<string, Folder> root)
+        public static void SetRoot(Folder root)
         {
             Folder.root = root;
         }
