@@ -28,13 +28,16 @@ namespace COC.Dropbox
                 var mail = mailTokenPair.Key;
                 var token = mailTokenPair.Value;
                 using var dropboxClient = new DropboxClient(token);
-                var rootFolder = GetFolder(mail, "", dropboxClient);
+                var content = new Dictionary<string, IFileSystemUnit>
+                    {{"dropbox", GetDropboxFolder(mail, "", dropboxClient)}};
+                var rootFolder = new Folder(mail, content);
+                //var rootFolder = GetDropboxFolder(mail, "", dropboxClient);
                 root.Content.Add(rootFolder.Name, rootFolder);
             }
             Folder.SetRoot(root);
         }
 
-        public Folder GetFolder(string email, string path, DropboxClient client)
+        public Folder GetDropboxFolder(string email, string path, DropboxClient client)
         {
             var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
             var content = new Dictionary<string, IFileSystemUnit>();
@@ -42,13 +45,13 @@ namespace COC.Dropbox
             {
                 if (metadata.IsFolder)
                 {
-                    var folderInside = GetFolder(email, path + '/' + metadata.Name, client);
+                    var folderInside = GetDropboxFolder(email, $"{path}/{metadata.Name}", client);
                     content.Add(metadata.Name,folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File(path + '/' +metadata.Name));
+                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}"));
             }
-            return new Folder(email + path, content);
+            return new Folder($"{email}/dropbox{path}", content);
         }
 
 
