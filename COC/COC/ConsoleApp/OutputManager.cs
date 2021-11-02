@@ -19,7 +19,6 @@ namespace COC.ConsoleApp
     {
         public static void WriteFolderData(Folder folder)
         {
-            Console.WriteLine($"Current folder: {folder.Path}\n");
             foreach (var item in folder.Content)
             {
                 Console.WriteLine(item.Key);

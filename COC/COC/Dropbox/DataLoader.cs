@@ -28,16 +28,18 @@ namespace COC.Dropbox
                 var mail = mailTokenPair.Key;
                 var token = mailTokenPair.Value;
                 using var dropboxClient = new DropboxClient(token);
-                var content = new Dictionary<string, IFileSystemUnit>
+                var mailFolderContent = new Dictionary<string, IFileSystemUnit>
                     {{"dropbox", GetDropboxFolder(mail, "", dropboxClient)}};
-                var rootFolder = new Folder(mail, content);
+                var mailFolder = new Folder($"Root/{mail}", mailFolderContent, root);
+                ((Folder) mailFolder.Content["dropbox"]).PreviousFolder = mailFolder; // Добавляем родительскую папку для папки dropbox
                 //var rootFolder = GetDropboxFolder(mail, "", dropboxClient);
-                root.Content.Add(rootFolder.Name, rootFolder);
+                root.Content.Add(mailFolder.Name, mailFolder);
             }
             Folder.SetRoot(root);
+            FileSystemManager.CurrentFolder = root;
         }
 
-        public Folder GetDropboxFolder(string email, string path, DropboxClient client)
+        public Folder GetDropboxFolder(string mail, string path, DropboxClient client)
         {
             var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
             var content = new Dictionary<string, IFileSystemUnit>();
@@ -45,15 +47,21 @@ namespace COC.Dropbox
             {
                 if (metadata.IsFolder)
                 {
-                    var folderInside = GetDropboxFolder(email, $"{path}/{metadata.Name}", client);
+                    var folderInside = GetDropboxFolder(mail, $"{path}/{metadata.Name}", client);
                     content.Add(metadata.Name,folderInside);
                 }
                 else
                     content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}"));
             }
-            return new Folder($"{email}/dropbox{path}", content);
-        }
+            var folder =  new Folder($"Root/{mail}/dropbox{path}", content);
+            foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
+                                                                                                                 //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
+            {
+                ((Folder) internalFolder).PreviousFolder = folder;
+            }
 
+            return folder;
+        }
 
         public DataLoader(Dictionary<string, string> mailToToken)
         {

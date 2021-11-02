@@ -5,7 +5,8 @@ namespace COC.Infrastructure
 {
     public static class FileSystemManager
     {
-        public static string CurrentPath;
+        public static string CurrentPath = "";
+        public static Folder CurrentFolder;
 
         public static Folder GetFolder(string path)
         {
@@ -19,7 +20,25 @@ namespace COC.Infrastructure
             }
 
             return folder;
+        }
+        
+        public static void MoveToFolder(string path)
+        {
+            if (path == "") 
+                return;
+            if (path == "-")
+            {
+                CurrentFolder = CurrentFolder.PreviousFolder;
+                return;
+            }
 
+            path = $"{CurrentFolder.Path}/{path}";
+            var splittedPath = SplitPath(path);
+            CurrentFolder = (Folder)Folder.root.Content[splittedPath[1]];
+            for (var i = 2; i < splittedPath.Length; i++)
+            {
+                CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
+            }
         }
 
         public static string[] SplitPath(string path)
