@@ -19,17 +19,15 @@ namespace COC.ConsoleApp
         private static bool isRunning = true;
         static void Main(string[] args)
         {
-            initialize();
+            Initialize();
             var dataLoader = new DataLoader(TokenStorage.MailToToken);
             dataLoader.GetFolders();
             while(isRunning)
             {
-                Console.Write($"{FileSystemManager.CurrentFolder.Path}>");
+                Console.Write($"{FileSystemManager.CurrentFolder.Path}> ");
                 InputManager.ReadCommand(ref isRunning);    
             }
-            
-            //OutputManager.WriteRootFolder();
-            
+
             /*var folder1 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru");
             var folder2 = Infrastructure.FileSystemManager.GetFolder("/dropbox");
             var folder3 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com/dropbox/Folder1");
@@ -40,12 +38,14 @@ namespace COC.ConsoleApp
             OutputManager.WriteFolderData(folder4);*/
         }
 
-        private static void initialize()
+        private static void Initialize()
         {
             string token1 = "_GIK0vRGaikAAAAAAAAAAVBniXPD8iG8Hw-LtrF-3yct_S_Gpp3-i41u5rhaVEkj";
             string token2 = "gceFacZd034AAAAAAAAAAXDBtTWhQV21RRk1UZ4kR-2mx_aauXw0N2CgbirC5YNe";
-            TokenStorage.AddToken(token1);
-            TokenStorage.AddToken(token2);
+            string token3 = "AQAAAABZ-f3MAAd6tWwREaOfEE3Qiv0H4XLT0KY";
+            TokenStorage.AddDropboxToken(token1);
+            TokenStorage.AddDropboxToken(token2);
+            TokenStorage.AddYandexToken(token3);
         }
     }
 }

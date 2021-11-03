@@ -10,15 +10,17 @@ using System.Threading.Tasks;
 using COC.Infrastructure;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
+using YandexDisk.Client.Http;
+using YandexDisk.Client.Protocol;
 
 // using HttpWebRequest
 
 namespace COC.Dropbox
 {
     
-    public class DataLoader
+    public class DataLoader //TODO рефактор всего класса
     {
-        private readonly Dictionary<string, string> mailToToken;
+        private readonly Dictionary<string, Dictionary<string, string>> mailToToken;
 
         public void GetFolders()
         {
@@ -26,17 +28,60 @@ namespace COC.Dropbox
             foreach (var mailTokenPair in mailToToken)
             {
                 var mail = mailTokenPair.Key;
-                var token = mailTokenPair.Value;
-                using var dropboxClient = new DropboxClient(token);
-                var mailFolderContent = new Dictionary<string, IFileSystemUnit>
-                    {{"dropbox", GetDropboxFolder(mail, "", dropboxClient)}};
-                var mailFolder = new Folder($"Root/{mail}", mailFolderContent, root);
-                ((Folder) mailFolder.Content["dropbox"]).PreviousFolder = mailFolder; // Добавляем родительскую папку для папки dropbox
-                //var rootFolder = GetDropboxFolder(mail, "", dropboxClient);
+                var services = mailTokenPair.Value;
+                var mailFolder = new Folder($"Root/{mail}");
+                var mailFolderContent = new Dictionary<string, IFileSystemUnit>();
+                foreach (var service in services)
+                {
+                    var token = service.Value;
+                    if (service.Key == "yandex")
+                    {
+                        var yandexClient = new DiskHttpApi(token);
+                        mailFolderContent.Add("yandex", GetYandexFolder(mail, "", yandexClient));
+                    }
+
+                    if (service.Key == "dropbox")
+                    {
+                        var dropboxClient = new DropboxClient(token);
+                        mailFolderContent.Add("dropbox", GetDropboxFolder(mail, "", dropboxClient));
+                    }
+                }
+                mailFolder.Content = mailFolderContent;
+                foreach (var service in mailFolder.Content)
+                {
+                    ((Folder) mailFolder.Content[service.Key]).PreviousFolder = mailFolder;
+                }
                 root.Content.Add(mailFolder.Name, mailFolder);
             }
             Folder.SetRoot(root);
             FileSystemManager.CurrentFolder = root;
+        }
+
+        public Folder GetYandexFolder(string mail, string path, DiskHttpApi client)
+        {
+            var tPath = "/"; //TODO кринж кринжов. Рут-папка в яндексе находится по адресу "/", а в dropbox по адресу ""
+            if (path != "")  //при этом путь до остальных папок в системе выглядит абсолютно одинаково, поэтому запилил такой костыль
+                tPath = path;
+            var metadataList = client.MetaInfo.GetInfoAsync(new ResourceRequest{Path = tPath}).Result.Embedded.Items;
+            var content = new Dictionary<string, IFileSystemUnit>();
+            foreach (var metadata in metadataList)
+            {
+                if (metadata.Type is ResourceType.Dir)
+                {
+                    var folderInside = GetYandexFolder(mail, $"{path}/{metadata.Name}", client);
+                    content.Add(metadata.Name, folderInside);
+                }
+                else
+                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}"));
+            }
+            var folder =  new Folder($"Root/{mail}/yandex{path}", content);
+            foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
+                //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
+            {
+                ((Folder) internalFolder).PreviousFolder = folder;
+            }
+
+            return folder;
         }
 
         public Folder GetDropboxFolder(string mail, string path, DropboxClient client)
@@ -63,7 +108,7 @@ namespace COC.Dropbox
             return folder;
         }
 
-        public DataLoader(Dictionary<string, string> mailToToken)
+        public DataLoader(Dictionary<string, Dictionary<string, string>> mailToToken)
         {
             this.mailToToken = mailToToken;
         }

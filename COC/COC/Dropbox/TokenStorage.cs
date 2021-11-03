@@ -7,28 +7,43 @@ using System.Net;
 using System.Text;
 using Dropbox.Api;
 using System.Threading.Tasks;
+using Chilkat;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
+using YandexDisk.Client.Http;
+using YandexDisk.Client.Protocol;
 
 
 namespace COC.Dropbox
 {    
     public static class TokenStorage
     {
-        public static readonly Dictionary<string, string> MailToToken = new Dictionary<string, string>();
-        public static string GetToken()
+        // public static readonly Dictionary<string, string> MailToToken = new Dictionary<string, string>();
+        public static readonly Dictionary<string, Dictionary<string, string>> MailToToken =
+            new Dictionary<string, Dictionary<string, string>>(); //TODO отдельная структура данных, можно даже красивую рефлексию оформить
+        
+        public static OAuth2 DropboxOAuth2 = new OAuth2
         {
-            Chilkat.OAuth2 oauth2 = new Chilkat.OAuth2
-            {
-                ListenPort = 3017,
-                AuthorizationEndpoint = "https://www.dropbox.com/oauth2/authorize",
-                TokenEndpoint = "https://api.dropboxapi.com/oauth2/token",
-                ClientId = "ryj3w3kellyrapb",
-                ClientSecret = "1ukvw813zamkzla",
-                CodeChallenge = false
-            };
-
-
+            ListenPort = 3017,
+            AuthorizationEndpoint = "https://www.dropbox.com/oauth2/authorize",
+            TokenEndpoint = "https://api.dropboxapi.com/oauth2/token",
+            ClientId = "ryj3w3kellyrapb",
+            ClientSecret = "1ukvw813zamkzla",
+            CodeChallenge = false
+        };
+        
+        public static OAuth2 YandexOAuth2 = new OAuth2
+        {
+            ListenPort = 3017,
+            AuthorizationEndpoint = "https://oauth.yandex.ru/authorize",
+            TokenEndpoint = "https://oauth.yandex.ru/token",
+            ClientId = "49e919b546904d4eaa8dede505f9c5cd",
+            ClientSecret = "ceafad130ce74956bc3a9b6f971fb003",
+            CodeChallenge = false
+        };
+        
+        public static string GetToken(OAuth2 oauth2)
+        {
             string url = oauth2.StartAuth();
             if (oauth2.LastMethodSuccess != true) {
                 Console.WriteLine(oauth2.LastErrorText);
@@ -63,15 +78,36 @@ namespace COC.Dropbox
             return oauth2.AccessToken;
         }
 
-        private static string GetMail(string token)
+        private static string GetDropboxMail(string token)
         {
             var dbc = new DropboxClient(token);
             var a = dbc.Users.GetCurrentAccountAsync().Result;
             return a.Email;
         }
-        public static void AddToken(string token)
+
+        //TODO рабочий GetYandexMail
+        private static string GetYandexMail(string token)
         {
-            MailToToken[GetMail(token)] = token;
+            return "sigmarblessme@gmail.com"; //а что поделать...
+        }
+        
+        //TODO рефактор AddToken (а надо?)
+        public static void AddDropboxToken(string token)
+        {
+            var mail = GetDropboxMail(token); 
+            if (MailToToken.ContainsKey(mail))
+                MailToToken[mail].Add("dropbox", token);
+            else
+                MailToToken[mail] = new Dictionary<string, string>{{"dropbox", token}};
+        }
+
+        public static void AddYandexToken(string token)
+        {
+            var mail = GetYandexMail(token); 
+            if (MailToToken.ContainsKey(mail))
+                MailToToken[mail].Add("yandex", token);
+            else
+                MailToToken[mail] = new Dictionary<string, string>{{"yandex", token}};
         }
     }
 }
