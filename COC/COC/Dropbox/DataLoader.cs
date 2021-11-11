@@ -47,6 +47,7 @@ namespace COC.Dropbox
                     }
                 }
                 mailFolder.Content = mailFolderContent;
+                mailFolder.PreviousFolder = root;
                 foreach (var service in mailFolder.Content)
                 {
                     ((Folder) mailFolder.Content[service.Key]).PreviousFolder = mailFolder;
