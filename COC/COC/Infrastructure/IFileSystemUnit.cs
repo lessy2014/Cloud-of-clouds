@@ -4,5 +4,6 @@ namespace COC.Infrastructure
     {
         public string Path { get; set; }
         public string Name { get; set; }
+        public string Mail { get; set; }
     }
 }

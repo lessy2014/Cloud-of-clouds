@@ -25,7 +25,7 @@ namespace COC.ConsoleApp
             while(isRunning)
             {
                 Console.Write($"{FileSystemManager.CurrentFolder.Path}> ");
-                InputManager.ReadCommand(ref isRunning);    
+                InputManager.ReadCommand(ref isRunning, TokenStorage.MailToToken);    
             }
 
             /*var folder1 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru");

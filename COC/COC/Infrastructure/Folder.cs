@@ -11,6 +11,7 @@ namespace COC.Infrastructure
         public static Folder root;
         public string Path { get; set; }
         public string Name { get; set; }
+        public string Mail { get; set; }
 
         public Folder PreviousFolder;
 
@@ -27,10 +28,11 @@ namespace COC.Infrastructure
             PreviousFolder = previousFolder;
         }
 
-        public Folder(string path, Dictionary<string, IFileSystemUnit> content,  Folder previousFolder=null)
+        public Folder(string path, Dictionary<string, IFileSystemUnit> content, string mail, Folder previousFolder=null)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
+            Mail = mail;
             // MetadataContent = metadataContent;
             Content = content;
             PreviousFolder = previousFolder;

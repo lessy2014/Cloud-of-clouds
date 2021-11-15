@@ -6,11 +6,13 @@ namespace COC.Infrastructure
     {
         public string Path { get; set; }
         public string Name { get; set; }
-        
-        public File(string path)
+        public string Mail { get; set; }
+
+        public File(string path, string mail)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
+            Mail = mail;
         }
 
     }

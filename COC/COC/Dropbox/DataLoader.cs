@@ -24,7 +24,7 @@ namespace COC.Dropbox
 
         public void GetFolders()
         {
-            var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
+            var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>(), null);
             foreach (var mailTokenPair in mailToToken)
             {
                 var mail = mailTokenPair.Key;
@@ -73,9 +73,9 @@ namespace COC.Dropbox
                     content.Add(metadata.Name, folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}"));
+                    content.Add(metadata.Name, new Infrastructure.File($"Root/{mail}/yandex{path}/{metadata.Name}", mail));
             }
-            var folder =  new Folder($"Root/{mail}/yandex{path}", content);
+            var folder =  new Folder($"Root/{mail}/yandex{path}", content, mail);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
                 //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
             {
@@ -97,9 +97,9 @@ namespace COC.Dropbox
                     content.Add(metadata.Name,folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}"));
+                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}", mail));
             }
-            var folder =  new Folder($"Root/{mail}/dropbox{path}", content);
+            var folder =  new Folder($"Root/{mail}/dropbox{path}", content, mail);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
                                                                                                                  //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
             {
@@ -112,6 +112,6 @@ namespace COC.Dropbox
         public DataLoader(Dictionary<string, Dictionary<string, string>> mailToToken)
         {
             this.mailToToken = mailToToken;
-        }
+        } 
     }
 }
