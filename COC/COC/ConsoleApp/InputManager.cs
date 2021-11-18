@@ -56,11 +56,12 @@ namespace COC.ConsoleApp
                             Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument], mailToToken); //TODO нельзя скачать файл с пробелом в названии
                         break;
                         // cd sigmarblessme@gmail.com/yandex/YandexFolder1
+                        // cd sigmarblessme@gmail.com/dropbox/Folder1
                         // download YandexPresentation1.pptx
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        Console.WriteLine("no");
+                        Console.WriteLine(e.ToString());
                         break;
                     }
                     

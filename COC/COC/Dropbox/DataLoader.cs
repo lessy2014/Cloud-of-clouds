@@ -97,7 +97,7 @@ namespace COC.Dropbox
                     content.Add(metadata.Name,folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"{path}/{metadata.Name}", mail));
+                    content.Add(metadata.Name, new Infrastructure.File($"Root/{mail}/dropbox{path}/{metadata.Name}", mail));
             }
             var folder =  new Folder($"Root/{mail}/dropbox{path}", content, mail);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
