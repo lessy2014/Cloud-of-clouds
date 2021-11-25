@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using COC.Infrastructure;
 using Dropbox.Api;
+using Dropbox.Api.Sharing;
 using YandexDisk.Client.Http;
 
 namespace COC.Dropbox
@@ -50,11 +51,34 @@ namespace COC.Dropbox
         private static string DropboxDownloader(string path, string token)
         {
             var dropboxClient = new DropboxClient(token);
+            Console.WriteLine(path);
             // path = "Folder1/Document1.gdoc";
-            // path = dropboxClient.Files.ListFolderAsync(path).Result.Entries.ToList()[2].PathDisplay;
             // Console.WriteLine(path);
-            var link = dropboxClient.Files.GetTemporaryLinkAsync(path).Result.Link;
-            return link;
+            // var link = dropboxClient.Files.GetTemporaryLinkAsync(path).Result.Link;
+            // var link = dropboxClient.Sharing.CreateSharedLinkWithSettingsAsync(path, new SharedLinkSettings(audience: LinkAudience.Public.Instance, access: RequestedLinkAccessLevel.Viewer.Instance)).Result.Url;
+            
+            //cd sigmarblessme@gmail.com/dropbox/Folder1
+
+            
+            // var link = dropboxClient.Sharing.CreateSharedLinkWithSettingsAsync(path).Result.Url;
+            var link = "";
+            var gotLink = false;
+            var links = dropboxClient.Sharing.ListSharedLinksAsync(path).Result.Links;
+            if (links.Count != 0)
+            {
+                foreach (var li in links)
+                {
+                    if (li.PathLower != path.ToLower())
+                        continue;
+                    gotLink = true;
+                    link = li.Url;
+                    break;
+                }
+            }
+            if (!gotLink)
+                link = dropboxClient.Sharing.CreateSharedLinkWithSettingsAsync(path).Result.Url;
+            var parts = link.Split(new [] {"dl=0"}, StringSplitOptions.None);
+            return parts[0] + "dl=1" + parts[1];
         }
     }
 }

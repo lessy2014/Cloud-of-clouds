@@ -40,8 +40,8 @@ namespace COC.ConsoleApp
 
         private static void Initialize()
         {
-            string token1 = "_GIK0vRGaikAAAAAAAAAAVBniXPD8iG8Hw-LtrF-3yct_S_Gpp3-i41u5rhaVEkj";
-            string token2 = "gceFacZd034AAAAAAAAAAXDBtTWhQV21RRk1UZ4kR-2mx_aauXw0N2CgbirC5YNe";
+            string token1 = "bqoXZJknL3gAAAAAAAAAAeS2oaOrMkcQg8kKCTITCy9PrBrqJG5xnp3N3xagnHKa";
+            string token2 = "4mUDzkowZAIAAAAAAAAAAb5ko9BO0noUJ0aLye-yVElUpjFGiV1ZwSXwx5gs1FuL";
             string token3 = "AQAAAABZ-f3MAAd6tWwREaOfEE3Qiv0H4XLT0KY";
             TokenStorage.AddDropboxToken(token1);
             TokenStorage.AddDropboxToken(token2);
