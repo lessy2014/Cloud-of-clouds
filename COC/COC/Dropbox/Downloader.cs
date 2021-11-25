@@ -26,7 +26,11 @@ namespace COC.Dropbox
             if (service == "yandex")
                 Console.WriteLine(YandexDownloader(path, token));
             else
-                Console.WriteLine(DropboxDownloader(path, token));
+            {
+                var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
+                Console.WriteLine(DropboxDownloader(path, token, isFile));
+            }
+
             Console.WriteLine();
             // var path = "/" + string.Join("/", fileSystemUnit.Path.Split('/').Skip(3));
             // if (path == "/")
@@ -48,19 +52,14 @@ namespace COC.Dropbox
             return link;
         }
 
-        private static string DropboxDownloader(string path, string token)
+        private static string DropboxDownloader(string path, string token, bool isFile)
         {
             var dropboxClient = new DropboxClient(token);
-            Console.WriteLine(path);
-            // path = "Folder1/Document1.gdoc";
-            // Console.WriteLine(path);
-            // var link = dropboxClient.Files.GetTemporaryLinkAsync(path).Result.Link;
-            // var link = dropboxClient.Sharing.CreateSharedLinkWithSettingsAsync(path, new SharedLinkSettings(audience: LinkAudience.Public.Instance, access: RequestedLinkAccessLevel.Viewer.Instance)).Result.Url;
-            
+            if (isFile)
+                if (!dropboxClient.Files.GetMetadataAsync(path).Result.AsFile.IsDownloadable)
+                    return "This file is not downloadable";
+            //var link = dropboxClient.Files.GetTemporaryLinkAsync(path).Result.Link;
             //cd sigmarblessme@gmail.com/dropbox/Folder1
-
-            
-            // var link = dropboxClient.Sharing.CreateSharedLinkWithSettingsAsync(path).Result.Url;
             var link = "";
             var gotLink = false;
             var links = dropboxClient.Sharing.ListSharedLinksAsync(path).Result.Links;
@@ -80,5 +79,6 @@ namespace COC.Dropbox
             var parts = link.Split(new [] {"dl=0"}, StringSplitOptions.None);
             return parts[0] + "dl=1" + parts[1];
         }
+        
     }
 }
