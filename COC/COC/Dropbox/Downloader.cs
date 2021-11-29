@@ -30,24 +30,11 @@ namespace COC.Dropbox
                 var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
                 Console.WriteLine(DropboxDownloader(path, token, isFile));
             }
-
-            Console.WriteLine();
-            // var path = "/" + string.Join("/", fileSystemUnit.Path.Split('/').Skip(3));
-            // if (path == "/")
-            // {
-            //     Console.WriteLine("This folder is not downloadable");
-            //     return;
-            // }
-            // var yandexClient = new DiskHttpApi(token);
-            // // path = "/YandexFolder1/YandexPresentation1.pptx";
-            // var link = yandexClient.Files.GetDownloadLinkAsync(path).Result;
-            // Console.WriteLine(link.Href);
         }
 
         private static string YandexDownloader(string path, string token)
         {
             var yandexClient = new DiskHttpApi(token);
-            // path = "/YandexFolder1/YandexPresentation1.pptx";
             var link = yandexClient.Files.GetDownloadLinkAsync(path).Result.Href;
             return link;
         }
@@ -58,8 +45,6 @@ namespace COC.Dropbox
             if (isFile)
                 if (!dropboxClient.Files.GetMetadataAsync(path).Result.AsFile.IsDownloadable)
                     return "This file is not downloadable";
-            //var link = dropboxClient.Files.GetTemporaryLinkAsync(path).Result.Link;
-            //cd sigmarblessme@gmail.com/dropbox/Folder1
             var link = "";
             var gotLink = false;
             var links = dropboxClient.Sharing.ListSharedLinksAsync(path).Result.Links;

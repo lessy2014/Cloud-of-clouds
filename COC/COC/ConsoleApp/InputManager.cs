@@ -10,7 +10,7 @@ namespace COC.ConsoleApp
     {
         public static void ReadCommand(ref bool isRunning, Dictionary<string, Dictionary<string, string>> mailToToken)
         {
-            var line = Console.ReadLine().Split(':');
+            var line = Console.ReadLine().Split('>');
             if (line.Length > 2)
             {
                 Console.WriteLine("Wrong number of parameters");
@@ -50,21 +50,31 @@ namespace COC.ConsoleApp
                 case "download":
                     try
                     {
-                        if (argument == null)
+                        if (string.IsNullOrEmpty(argument))
                             Downloader.DownloadFile(FileSystemManager.CurrentFolder, mailToToken);
                         else
-                            Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument], mailToToken); //TODO нельзя скачать файл с пробелом в названии
+                            Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument], mailToToken); 
                         break;
                         // cd sigmarblessme@gmail.com/yandex/YandexFolder1
                         // cd sigmarblessme@gmail.com/dropbox/Folder1
                         // download YandexPresentation1.pptx
+                        // upload F:\Leonid Programmes\COC test\newTXT.txt
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine(e.ToString());
                         break;
                     }
-                    
+
+                case "upload":
+                {
+                    if (string.IsNullOrEmpty(argument))
+                        Console.WriteLine("Write path to the file to upload");
+                    else
+                        Uploader.UploadFile(FileSystemManager.CurrentFolder, argument, mailToToken);
+                    break;
+                }
+
                 default:
                     Console.WriteLine($"Unknown command \'{command}\'");
                     return;
