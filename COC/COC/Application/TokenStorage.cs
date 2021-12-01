@@ -12,16 +12,20 @@ using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 using YandexDisk.Client.Http;
 using YandexDisk.Client.Protocol;
+using Account = COC.Application.Account;
 
 
-namespace COC.Dropbox
+namespace COC
 {    
     public static class TokenStorage
     {
-        // public static readonly Dictionary<string, string> MailToToken = new Dictionary<string, string>();
+        public static readonly Dictionary<string, Account> mailToAccount = new Dictionary<string, Account>();
+
         public static readonly Dictionary<string, Dictionary<string, string>> MailToToken =
             new Dictionary<string, Dictionary<string, string>>(); //TODO отдельная структура данных, можно даже красивую рефлексию оформить
-        
+
+        public static readonly List<Application.Account> Accounts = new List<Application.Account>();
+
         public static OAuth2 DropboxOAuth2 = new OAuth2
         {
             ListenPort = 3017,
@@ -94,7 +98,7 @@ namespace COC.Dropbox
         //TODO рефактор AddToken (а надо?)
         public static void AddDropboxToken(string token)
         {
-            var mail = GetDropboxMail(token); 
+            var mail = GetDropboxMail(token);
             if (MailToToken.ContainsKey(mail))
                 MailToToken[mail].Add("dropbox", token);
             else
@@ -103,11 +107,42 @@ namespace COC.Dropbox
 
         public static void AddYandexToken(string token)
         {
-            var mail = GetYandexMail(token); 
+            var mail = GetYandexMail(token);
             if (MailToToken.ContainsKey(mail))
                 MailToToken[mail].Add("yandex", token);
             else
                 MailToToken[mail] = new Dictionary<string, string>{{"yandex", token}};
+        }
+        
+        public static void AddToken(string token, string service)
+        {
+            var mail = "";
+            switch (service)
+            {
+                case "dropbox":
+                {
+                    mail = GetDropboxMail(token);
+                    break;
+                }
+                case "yandex":
+                {
+                    mail = GetYandexMail(token);
+                    break;
+                }
+                default:
+                    throw new ArgumentException("Unknown service");
+            }
+
+
+            if(mailToAccount.ContainsKey(mail))
+                mailToAccount[mail].ServicesTokens[service] = token;
+            else
+            {
+                mailToAccount.Add(mail, new Account(mail)
+                {
+                    ServicesTokens = {[service] = token}
+                });
+            }
         }
     }
 }

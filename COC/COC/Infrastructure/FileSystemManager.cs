@@ -28,7 +28,7 @@ namespace COC.Infrastructure
                 return;
             if (path == "-")
             {
-                CurrentFolder = CurrentFolder.PreviousFolder;
+                CurrentFolder = CurrentFolder.ParentFolder;
                 return;
             }
 

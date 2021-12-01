@@ -13,7 +13,7 @@ using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 
 
-namespace COC.ConsoleApp
+namespace COC
 {
     public static class OutputManager
     {

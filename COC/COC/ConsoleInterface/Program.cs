@@ -12,30 +12,21 @@ using COC.Infrastructure;
 using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 
-namespace COC.ConsoleApp
+namespace COC
 {
     public class Program
     {
         private static bool isRunning = true;
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Initialize();
-            var dataLoader = new DataLoader(TokenStorage.MailToToken);
-            dataLoader.GetFolders();
+            var dataLoader = new DataLoader(TokenStorage.mailToAccount.Values.ToList());
+            dataLoader.InitializeFileSystem();
             while(isRunning)
             {
                 Console.Write($"{FileSystemManager.CurrentFolder.Path}> ");
                 InputManager.ReadCommand(ref isRunning, TokenStorage.MailToToken);    
             }
-
-            /*var folder1 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru");
-            var folder2 = Infrastructure.FileSystemManager.GetFolder("/dropbox");
-            var folder3 = Infrastructure.FileSystemManager.GetFolder("sigmarblessme@gmail.com/dropbox/Folder1");
-            var folder4 = Infrastructure.FileSystemManager.GetFolder("bir.ssss@mail.ru/dropbox");
-            OutputManager.WriteFolderData(folder1);
-            OutputManager.WriteFolderData(folder2);
-            OutputManager.WriteFolderData(folder3);
-            OutputManager.WriteFolderData(folder4);*/
         }
 
         private static void Initialize()
@@ -46,6 +37,9 @@ namespace COC.ConsoleApp
             TokenStorage.AddDropboxToken(token1);
             TokenStorage.AddDropboxToken(token2);
             TokenStorage.AddYandexToken(token3);
+            TokenStorage.AddToken(token1, "dropbox");
+            TokenStorage.AddToken(token2, "dropbox");
+            TokenStorage.AddToken(token3, "yandex");
         }
     }
 }

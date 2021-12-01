@@ -7,9 +7,9 @@ using Dropbox.Api;
 using Dropbox.Api.Sharing;
 using YandexDisk.Client.Http;
 
-namespace COC.Dropbox
+namespace COC
 {
-    public class Downloader
+    public static class Downloader
     {
         public static void DownloadFile(IFileSystemUnit fileSystemUnit, Dictionary<string, Dictionary<string, string>> mailToToken)
         {

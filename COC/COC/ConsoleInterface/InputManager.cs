@@ -4,7 +4,7 @@ using System.Linq;
 using COC.Dropbox;
 using COC.Infrastructure;
 
-namespace COC.ConsoleApp
+namespace COC
 {
     public static class InputManager
     {
