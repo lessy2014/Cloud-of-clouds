@@ -19,10 +19,7 @@ namespace COC
 {    
     public static class TokenStorage
     {
-        public static readonly Dictionary<string, Account> mailToAccount = new Dictionary<string, Account>();
-
-        public static readonly Dictionary<string, Dictionary<string, string>> MailToToken =
-            new Dictionary<string, Dictionary<string, string>>(); //TODO отдельная структура данных, можно даже красивую рефлексию оформить
+        public static readonly Dictionary<string, Account> MailToAccount = new Dictionary<string, Account>();
 
         public static readonly List<Application.Account> Accounts = new List<Application.Account>();
 
@@ -95,50 +92,20 @@ namespace COC
             return "sigmarblessme@gmail.com"; //а что поделать...
         }
         
-        //TODO рефактор AddToken (а надо?)
-        public static void AddDropboxToken(string token)
-        {
-            var mail = GetDropboxMail(token);
-            if (MailToToken.ContainsKey(mail))
-                MailToToken[mail].Add("dropbox", token);
-            else
-                MailToToken[mail] = new Dictionary<string, string>{{"dropbox", token}};
-        }
-
-        public static void AddYandexToken(string token)
-        {
-            var mail = GetYandexMail(token);
-            if (MailToToken.ContainsKey(mail))
-                MailToToken[mail].Add("yandex", token);
-            else
-                MailToToken[mail] = new Dictionary<string, string>{{"yandex", token}};
-        }
-        
         public static void AddToken(string token, string service)
         {
-            var mail = "";
-            switch (service)
+            var mail = service switch
             {
-                case "dropbox":
-                {
-                    mail = GetDropboxMail(token);
-                    break;
-                }
-                case "yandex":
-                {
-                    mail = GetYandexMail(token);
-                    break;
-                }
-                default:
-                    throw new ArgumentException("Unknown service");
-            }
+                "dropbox" => GetDropboxMail(token),
+                "yandex" => GetYandexMail(token),
+                _ => throw new ArgumentException("Unknown service")
+            };
 
-
-            if(mailToAccount.ContainsKey(mail))
-                mailToAccount[mail].ServicesTokens[service] = token;
+            if(MailToAccount.ContainsKey(mail))
+                MailToAccount[mail].ServicesTokens[service] = token;
             else
             {
-                mailToAccount.Add(mail, new Account(mail)
+                MailToAccount.Add(mail, new Account(mail)
                 {
                     ServicesTokens = {[service] = token}
                 });

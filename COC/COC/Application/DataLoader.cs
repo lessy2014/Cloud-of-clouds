@@ -17,7 +17,7 @@ using Account = COC.Application.Account;
 
 namespace COC
 {
-    public class DataLoader //TODO рефактор всего класса
+    public class DataLoader
     {
         private readonly List<Account> accounts;
 

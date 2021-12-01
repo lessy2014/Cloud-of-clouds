@@ -21,7 +21,6 @@ namespace COC
     {
         public static Folder GetFolders(Account account, string path, DiskHttpApi client)
         {
-            
             var tPath = "/"; //TODO кринж кринжов. Рут-папка в яндексе находится по адресу "/", а в dropbox по адресу ""
             if (path != "")  //при этом путь до остальных папок в системе выглядит абсолютно одинаково, поэтому запилил такой костыль
                 tPath = path;

@@ -4,8 +4,8 @@ namespace COC.Application
 {
     public class Account
     {
-        public string Mail;
-        public Dictionary<string, string> ServicesTokens;
+        public readonly string Mail;
+        public readonly Dictionary<string, string> ServicesTokens;
 
         public Account(string mail)
         {

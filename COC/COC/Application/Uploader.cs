@@ -14,9 +14,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace COC.Dropbox
 {
-    public class Uploader
+    public static class Uploader
     {
-        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath, Dictionary<string, Dictionary<string, string>> mailToToken)
+        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath)
         {
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 3)
@@ -29,31 +29,23 @@ namespace COC.Dropbox
             if (splittedPath.Length > 3)
                 path = '/' + path;
             var mail = fileSystemUnit.Mail;
-            var token = mailToToken[mail][service];
+            var token = fileSystemUnit.Account.ServicesTokens[service];
             var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
                 Console.WriteLine("You can't upload file into file");
-            else if (service == "yandex")
-                YandexUploader(path + '/' + fileName, fileToUploadPath, token);
-            else if (service == "dropbox")
-                DropboxUploader(path + '/' + fileName, fileToUploadPath, token);
-            else
-                Console.WriteLine("Unknown service");
-        }
-        private static void DropboxUploader(string pathToUpload, string fileToUploadPath, string token)
-        {
-            var dropboxClient = new DropboxClient(token);
-            var file = File.Open(fileToUploadPath, FileMode.Open);
-            var _ = dropboxClient.Files.UploadAsync(pathToUpload, WriteMode.Add.Instance,
-                body: file).Result;
-        }
-        
-        private static void YandexUploader(string pathToUpload, string fileToUploadPath, string token)
-        {
-            var yandexClient = new DiskHttpApi(token);
-            var file = File.Open(fileToUploadPath, FileMode.Open);
-            Task.Run(() => yandexClient.Files.UploadFileAsync(pathToUpload, false, file));
+            else switch (service)
+            {
+                case "yandex":
+                    YandexUploader.UploadFile(path + '/' + fileName, fileToUploadPath, token);
+                    break;
+                case "dropbox":
+                    DropboxUploader.UploadFile(path + '/' + fileName, fileToUploadPath, token);
+                    break;
+                default:
+                    Console.WriteLine("Unknown service");
+                    break;
+            }
         }
     }
 }

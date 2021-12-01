@@ -9,7 +9,7 @@ namespace COC.Infrastructure
     {
         public Dictionary<string, IFileSystemUnit> Content = new Dictionary<string, IFileSystemUnit>();
 
-        public static Folder root;
+        public static Folder Root;
         public string Path { get; set; }
         public string Name { get; set; }
         public string Mail { get; set; }
@@ -47,7 +47,7 @@ namespace COC.Infrastructure
 
         public static void SetRoot(Folder root)
         {
-            Folder.root = root;
+            Folder.Root = root;
         }
     }
 }

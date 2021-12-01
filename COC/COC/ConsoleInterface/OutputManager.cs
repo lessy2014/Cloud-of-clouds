@@ -28,7 +28,7 @@ namespace COC
         public static void WriteRootFolder()
         {
             Console.WriteLine("Current folder: Root \n");
-            foreach (var folder in Folder.root.Content)
+            foreach (var folder in Folder.Root.Content)
             {
                 Console.WriteLine(folder.Value.Name);
             }

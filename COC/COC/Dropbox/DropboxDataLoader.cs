@@ -34,11 +34,9 @@ namespace COC
             }
             var folder =  new Folder($"Root/{account.Mail}/dropbox{path}", content, account);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
-                //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
-            {
+            {                                                                                                    //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
                 ((Folder) internalFolder).ParentFolder = folder;
             }
-
             return folder;
         }
 

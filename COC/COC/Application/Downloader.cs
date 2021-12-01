@@ -24,12 +24,19 @@ namespace COC
             var path = "/" + string.Join("/", splittedPath.Skip(3));
             var mail = fileSystemUnit.Mail;
             var token = fileSystemUnit.Account.ServicesTokens[service];
-            if (service == "yandex")
-                Console.WriteLine(YandexDownloader.DownloadFile(path, token));
-            else
+            switch (service)
             {
-                var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
-                Console.WriteLine(DropboxDownloader.DownloadFIle(path, token, isFile));
+                case "yandex":
+                    Console.WriteLine(YandexDownloader.DownloadFile(path, token));
+                    break;
+                case "dropbox":
+                {
+                    var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
+                    Console.WriteLine(DropboxDownloader.DownloadFIle(path, token, isFile));
+                    break;
+                }
+                default:
+                    throw new ArgumentException("Unknown service");
             }
         }
     }

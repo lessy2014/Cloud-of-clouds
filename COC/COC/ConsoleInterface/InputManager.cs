@@ -8,7 +8,7 @@ namespace COC
 {
     public static class InputManager
     {
-        public static void ReadCommand(ref bool isRunning, Dictionary<string, Dictionary<string, string>> mailToToken)
+        public static void ReadCommand(ref bool isRunning)
         {
             var line = Console.ReadLine().Split('>');
             if (line.Length > 2)
@@ -22,10 +22,6 @@ namespace COC
             string argument = null;
             if (request.Length > 1)
                 argument = string.Join(" ", request.Skip(1));
-            string[] parameters = null;
-            if (line.Length == 2)
-                parameters = line[1].Split();
-            // var args = new List<string>(new ArraySegment<string>(line, 1, line.Length-1));
             switch (command)
             {
                 case "dir":
@@ -50,10 +46,9 @@ namespace COC
                 case "download":
                     try
                     {
-                        if (string.IsNullOrEmpty(argument))
-                            Downloader.DownloadFile(FileSystemManager.CurrentFolder);
-                        else
-                            Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument]); 
+                        Downloader.DownloadFile(string.IsNullOrEmpty(argument)
+                            ? FileSystemManager.CurrentFolder
+                            : FileSystemManager.CurrentFolder.Content[argument]);
                         break;
                         // cd sigmarblessme@gmail.com/yandex/YandexFolder1
                         // cd sigmarblessme@gmail.com/dropbox/Folder1
@@ -71,7 +66,7 @@ namespace COC
                     if (string.IsNullOrEmpty(argument))
                         Console.WriteLine("Write path to the file to upload");
                     else
-                        Uploader.UploadFile(FileSystemManager.CurrentFolder, argument, mailToToken);
+                        Uploader.UploadFile(FileSystemManager.CurrentFolder, argument);
                     break;
                 }
 
