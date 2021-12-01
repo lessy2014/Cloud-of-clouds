@@ -1,21 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using Dropbox.Api;
-using System.Threading.Tasks;
 using Chilkat;
-using Dropbox.Api.Files;
-using Dropbox.Api.Users;
-using YandexDisk.Client.Http;
-using YandexDisk.Client.Protocol;
-using Account = COC.Application.Account;
+using Dropbox.Api;
 
 
-namespace COC
+namespace COC.Application
 {    
     public static class TokenStorage
     {

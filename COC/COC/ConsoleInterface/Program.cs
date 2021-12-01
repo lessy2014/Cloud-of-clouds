@@ -1,18 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using Dropbox.Api;
-using System.Threading.Tasks;
-using COC.Dropbox;
+using COC.Application;
 using COC.Infrastructure;
-using Dropbox.Api.Files;
-using Dropbox.Api.Users;
 
-namespace COC
+namespace COC.ConsoleInterface
 {
     public static class Program
     {

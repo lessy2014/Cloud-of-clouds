@@ -1,4 +1,4 @@
-namespace COC
+namespace COC.Application
 {
     public class IApiClient
     {

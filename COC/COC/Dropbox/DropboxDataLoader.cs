@@ -1,20 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using Dropbox.Api;
-using System.Threading.Tasks;
 using COC.Infrastructure;
-using Dropbox.Api.Files;
-using Dropbox.Api.Users;
-using YandexDisk.Client.Http;
-using YandexDisk.Client.Protocol;
+using Dropbox.Api;
 using Account = COC.Application.Account;
 
-namespace COC
+namespace COC.Dropbox
 {
     public static class DropboxDataLoader
     {

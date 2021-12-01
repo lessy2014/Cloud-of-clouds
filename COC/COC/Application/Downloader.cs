@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using COC.Application;
+using COC.Dropbox;
 using COC.Infrastructure;
-using Dropbox.Api;
-using Dropbox.Api.Sharing;
-using YandexDisk.Client.Http;
+using COC.Yandex;
 
-namespace COC
+namespace COC.Application
 {
     public static class Downloader
     {

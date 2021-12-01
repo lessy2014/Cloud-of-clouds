@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using COC.Dropbox;
+using COC.Application;
 using COC.Infrastructure;
 
-namespace COC
+namespace COC.ConsoleInterface
 {
     public static class InputManager
     {

@@ -1,21 +1,11 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using Dropbox.Api;
-using System.Threading.Tasks;
 using COC.Infrastructure;
-using COC.Application;
-using Dropbox.Api.Files;
-using Dropbox.Api.Users;
 using YandexDisk.Client.Http;
 using YandexDisk.Client.Protocol;
 using Account = COC.Application.Account;
 
-namespace COC
+namespace COC.Yandex
 {
     public static class YandexDataLoader
     {
@@ -34,7 +24,7 @@ namespace COC
                     content.Add(metadata.Name, folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"Root/{account.Mail}/yandex{path}/{metadata.Name}", account));
+                    content.Add(metadata.Name, new File($"Root/{account.Mail}/yandex{path}/{metadata.Name}", account));
             }
             var folder =  new Folder($"Root/{account.Mail}/yandex{path}", content, account);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую

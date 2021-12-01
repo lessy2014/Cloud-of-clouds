@@ -1,18 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Chilkat;
+using COC.Dropbox;
 using COC.Infrastructure;
-using Dropbox.Api;
-using Dropbox.Api.Files;
-using YandexDisk.Client.Clients;
-using YandexDisk.Client.Http;
-using YandexDisk.Client.Protocol;
-using File = System.IO.File;
-using Task = System.Threading.Tasks.Task;
+using COC.Yandex;
 
-namespace COC.Dropbox
+namespace COC.Application
 {
     public static class Uploader
     {
