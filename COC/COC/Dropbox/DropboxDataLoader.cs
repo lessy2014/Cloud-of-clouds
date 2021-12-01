@@ -12,12 +12,13 @@ using Dropbox.Api.Files;
 using Dropbox.Api.Users;
 using YandexDisk.Client.Http;
 using YandexDisk.Client.Protocol;
+using Account = COC.Application.Account;
 
 namespace COC
 {
     public static class DropboxDataLoader
     {
-        public static Folder GetFolders(string mail, string path, DropboxClient client)
+        public static Folder GetFolders(Account account, string path, DropboxClient client)
         {
             var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
             var content = new Dictionary<string, IFileSystemUnit>();
@@ -25,13 +26,13 @@ namespace COC
             {
                 if (metadata.IsFolder)
                 {
-                    var folderInside = GetFolders(mail, $"{path}/{metadata.Name}", client);
+                    var folderInside = GetFolders(account, $"{path}/{metadata.Name}", client);
                     content.Add(metadata.Name,folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"Root/{mail}/dropbox{path}/{metadata.Name}", mail));
+                    content.Add(metadata.Name, new Infrastructure.File($"Root/{account.Mail}/dropbox{path}/{metadata.Name}", account));
             }
-            var folder =  new Folder($"Root/{mail}/dropbox{path}", content, mail);
+            var folder =  new Folder($"Root/{account.Mail}/dropbox{path}", content, account);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
                 //(пришлось так написать из-за того что папки начинают с самых вложенных создаваться) 
             {

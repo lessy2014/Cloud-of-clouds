@@ -51,9 +51,9 @@ namespace COC
                     try
                     {
                         if (string.IsNullOrEmpty(argument))
-                            Downloader.DownloadFile(FileSystemManager.CurrentFolder, mailToToken);
+                            Downloader.DownloadFile(FileSystemManager.CurrentFolder);
                         else
-                            Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument], mailToToken); 
+                            Downloader.DownloadFile(FileSystemManager.CurrentFolder.Content[argument]); 
                         break;
                         // cd sigmarblessme@gmail.com/yandex/YandexFolder1
                         // cd sigmarblessme@gmail.com/dropbox/Folder1

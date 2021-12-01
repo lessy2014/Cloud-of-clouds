@@ -23,14 +23,14 @@ namespace COC
 
         public void InitializeFileSystem()
         {
-            var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>(), null);
+            var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var account in accounts)
             {
                 var mailFolder = new Folder($"Root/{account.Mail}");
                 foreach (var serviceToken in account.ServicesTokens)
                 {
                     mailFolder.Content.Add(serviceToken.Key,
-                        GetFolders(account.Mail, serviceToken.Key, serviceToken.Value));
+                        GetFolders(account, serviceToken.Key, serviceToken.Value));
                 }
 
                 mailFolder.ParentFolder = root;
@@ -46,19 +46,19 @@ namespace COC
             FileSystemManager.CurrentFolder = root;
         }
 
-        private static Folder GetFolders(string mail, string service, string token)
+        private static Folder GetFolders(Account account, string service, string token)
         {
             switch (service)
             {
                 case "yandex":
                 {
                     var client = new DiskHttpApi(token);
-                    return YandexDataLoader.GetFolders(mail, "", client);
+                    return YandexDataLoader.GetFolders(account, "", client);
                 }
                 case "dropbox":
                 {
                     var dropboxClient = new DropboxClient(token);
-                    return DropboxDataLoader.GetFolders(mail, "", dropboxClient);
+                    return DropboxDataLoader.GetFolders(account, "", dropboxClient);
                 }
                 default:
                     throw new ArgumentException("Unknown service");

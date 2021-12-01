@@ -1,4 +1,5 @@
 using System.Linq;
+using COC.Application;
 
 namespace COC.Infrastructure
 {
@@ -7,12 +8,15 @@ namespace COC.Infrastructure
         public string Path { get; set; }
         public string Name { get; set; }
         public string Mail { get; set; }
+        
+        public Account Account { get; }
 
-        public File(string path, string mail)
+        public File(string path, Account account)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
-            Mail = mail;
+            Mail = account.Mail;
+            Account = account;
         }
 
     }
