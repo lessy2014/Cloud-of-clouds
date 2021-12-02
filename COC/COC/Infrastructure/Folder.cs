@@ -34,7 +34,7 @@ namespace COC.Infrastructure
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
-            Mail = account.Mail;
+            Mail = account.AccountName;
             Content = content;
             Account = account;
         }

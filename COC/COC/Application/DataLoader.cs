@@ -18,7 +18,7 @@ namespace COC.Application
             var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var account in accounts)
             {
-                var mailFolder = new Folder($"Root/{account.Mail}");
+                var mailFolder = new Folder($"Root/{account.AccountName}");
                 foreach (var serviceToken in account.ServicesTokens)
                 {
                     mailFolder.Content.Add(serviceToken.Key,
