@@ -52,7 +52,9 @@ namespace COC.ConsoleInterface
                         // cd sigmarblessme@gmail.com/yandex/YandexFolder1
                         // cd sigmarblessme@gmail.com/dropbox/Folder1
                         // download YandexPresentation1.pptx
-                        // upload F:\Leonid Programmes\COC test\newTXT.txt
+                        // upload F:\Leonid Programmes\COCtest\newTXT.txt
+                        // upload F:\Leonid Programmes\COCtest\txt2.txt
+                        // upload F:\Leonid Programmes\COCtest
                     }
                     catch (Exception e)
                     {

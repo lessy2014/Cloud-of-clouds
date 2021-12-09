@@ -20,8 +20,9 @@ namespace COC.Application
             var path = string.Join("/", splittedPath.Skip(3));
             if (splittedPath.Length > 3)
                 path = '/' + path;
-            var mail = fileSystemUnit.Mail;
-            var token = fileSystemUnit.Account.ServicesTokens[service];
+            var account = fileSystemUnit.Account;
+            // var mail = fileSystemUnit.Mail;
+            // var token = fileSystemUnit.Account.ServicesTokens[service];
             var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
@@ -29,10 +30,10 @@ namespace COC.Application
             else switch (service)
             {
                 case "yandex":
-                    YandexUploader.UploadFile(path + '/' + fileName, fileToUploadPath, token);
+                    YandexUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
                     break;
                 case "dropbox":
-                    DropboxUploader.UploadFile(path + '/' + fileName, fileToUploadPath, token);
+                    DropboxUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
                     break;
                 default:
                     Console.WriteLine("Unknown service");

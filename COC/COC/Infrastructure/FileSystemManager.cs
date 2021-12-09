@@ -28,17 +28,30 @@ namespace COC.Infrastructure
             {
                 case "":
                     return;
-                case "-":
+                case "<":
                     CurrentFolder = CurrentFolder.ParentFolder;
+                    return;
+                case "*":
+                    CurrentFolder = Folder.Root;
                     return;
             }
 
-            path = $"{CurrentFolder.Path}/{path}";
+            // path = $"{CurrentFolder.Path}/{path}";
             var splittedPath = SplitPath(path);
-            CurrentFolder = (Folder)Folder.Root.Content[splittedPath[1]];
-            for (var i = 2; i < splittedPath.Length; i++)
+            if (splittedPath[0] != "*")
             {
-                CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
+                foreach (var folder in splittedPath)
+                {
+                    CurrentFolder = (Folder) CurrentFolder.Content[folder];
+                }
+            }
+            else
+            {
+                CurrentFolder = (Folder)Folder.Root.Content[splittedPath[1]];
+                for (var i = 2; i < splittedPath.Length; i++)
+                {
+                    CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
+                }
             }
         }
 
