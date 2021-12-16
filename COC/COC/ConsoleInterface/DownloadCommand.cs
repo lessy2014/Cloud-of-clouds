@@ -15,7 +15,7 @@ namespace COC.ConsoleInterface
             throw new NotImplementedException();
         }
         
-        [Value(index: 0, Required = false)]
+        [Value(index: 0, Required = false, HelpText = "Name of file or folder")]
         public string objectName { get; set; }
 
         public void Execute(object parameter)

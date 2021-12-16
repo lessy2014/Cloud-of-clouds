@@ -19,7 +19,8 @@ namespace COC.ConsoleInterface
                     CloseCommand,
                     DownloadCommand,
                     UploadCommand,
-                    AddAccountCommand
+                    AddAccountCommand,
+                    FindCommand
                 >(command.Split())
                 .WithParsed<ICommand>(command1 => command1.Execute(null));
         }

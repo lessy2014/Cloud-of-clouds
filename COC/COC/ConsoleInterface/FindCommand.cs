@@ -4,23 +4,22 @@ using COC.Application;
 using COC.Infrastructure;
 using CommandLine;
 
-
 namespace COC.ConsoleInterface
 {
-    [Verb("upload", HelpText = "Upload file")]
-    public class UploadCommand: ICommand
+    [Verb("find", HelpText = "Find all files and folders with given name")]
+    public class FindCommand: ICommand
     {
+        [Value(index:0, Required = true, HelpText = "Name of file or Folder")]
+        public string Name { get; set; }
+        
         public bool CanExecute(object parameter)
         {
             throw new NotImplementedException();
         }
 
-        [Value(index:0, Required = true, HelpText = "Path to file")]
-        public string PathToFile { get; set; }
-
         public void Execute(object parameter)
-        { 
-            Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile);
+        {
+            Finder.Find(FileSystemManager.CurrentFolder, Name);
         }
 
         public event EventHandler CanExecuteChanged;
