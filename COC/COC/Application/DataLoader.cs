@@ -35,6 +35,7 @@ namespace COC.Application
             }
 
             Folder.SetRoot(root);
+            root.ParentFolder = root;
             FileSystemManager.CurrentFolder = root;
         }
 
@@ -55,6 +56,20 @@ namespace COC.Application
                 default:
                     throw new ArgumentException("Unknown service");
             }
+        }
+        
+        public static void GetFoldersFromNewAccount(Account account, string service)
+        {
+            var mailFolder = new Folder($"Root/{account.AccountName}");
+            mailFolder.Content.Add(service, GetFolders(account, service, account.ServicesTokens[service]));
+
+            mailFolder.ParentFolder = Folder.Root;
+            foreach (var folder in mailFolder.Content.Values)
+            {
+                ((Folder) folder).ParentFolder = mailFolder;
+            }
+
+            Folder.Root.Content.Add(mailFolder.Name, mailFolder);
         }
         
         public DataLoader(List<Account> accounts)

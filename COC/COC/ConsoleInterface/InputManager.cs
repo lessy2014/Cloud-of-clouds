@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using COC.Application;
 using COC.Infrastructure;
+using YandexDisk.Client.Http;
 
 namespace COC.ConsoleInterface
 {
@@ -21,6 +22,9 @@ namespace COC.ConsoleInterface
             string argument = null;
             if (request.Length > 1)
                 argument = string.Join(" ", request.Skip(1));
+            var parameter = "";
+            if (line.Length > 1)
+                parameter = line[1];
             switch (command)
             {
                 case "dir":
@@ -55,6 +59,7 @@ namespace COC.ConsoleInterface
                         // upload F:\Leonid Programmes\COCtest\newTXT.txt
                         // upload F:\Leonid Programmes\COCtest\txt2.txt
                         // upload F:\Leonid Programmes\COCtest
+                        // upload F:\Leonid Programmes\HW4 python pair task\public-materials\29-profiling\example_2.log
                     }
                     catch (Exception e)
                     {
@@ -68,6 +73,33 @@ namespace COC.ConsoleInterface
                         Console.WriteLine("Write path to the file to upload");
                     else
                         Uploader.UploadFile(FileSystemManager.CurrentFolder, argument);
+                    break;
+                }
+
+                case "add_account":
+                {
+                    if (string.IsNullOrEmpty(argument))
+                        Console.WriteLine("Write a name of service");
+                    else
+                    {
+                        argument = argument.ToLower();
+                        if (argument == "yandex")
+                        {
+                            var account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.YandexOAuth2), parameter,
+                                argument);
+                            DataLoader.GetFoldersFromNewAccount(account, argument);
+                            // Yandex.YandexDataLoader.GetFolders(account, "",
+                            //     new DiskHttpApi(account.ServicesTokens[argument]));
+                        }
+                        else if (argument.ToLower() == "dropbox")
+                        {
+                            var account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.DropboxOAuth2), parameter,
+                                argument.ToLower());
+                            DataLoader.GetFoldersFromNewAccount(account, argument);
+                        }
+                        else
+                            Console.WriteLine("Unsupported service");
+                    }
                     break;
                 }
 

@@ -37,6 +37,7 @@ namespace COC.Infrastructure
             }
 
             // path = $"{CurrentFolder.Path}/{path}";
+            var tempFolder = CurrentFolder;
             var splittedPath = SplitPath(path);
             if (splittedPath[0] != "*")
             {

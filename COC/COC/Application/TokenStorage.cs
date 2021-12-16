@@ -8,11 +8,13 @@ namespace COC.Application
 {    
     public static class TokenStorage
     {
-        public static readonly Dictionary<string, Account> MailToAccount = new Dictionary<string, Account>();
+        private static int freeId;
+        
+        public static readonly Dictionary<string, Account> NameToAccount = new Dictionary<string, Account>();
 
         public static readonly List<Application.Account> Accounts = new List<Application.Account>();
 
-        public static OAuth2 DropboxOAuth2 = new OAuth2
+        public static readonly OAuth2 DropboxOAuth2 = new OAuth2
         {
             ListenPort = 3017,
             AuthorizationEndpoint = "https://www.dropbox.com/oauth2/authorize",
@@ -22,7 +24,7 @@ namespace COC.Application
             CodeChallenge = false
         };
         
-        public static OAuth2 YandexOAuth2 = new OAuth2
+        public static readonly OAuth2 YandexOAuth2 = new OAuth2
         {
             ListenPort = 3017,
             AuthorizationEndpoint = "https://oauth.yandex.ru/authorize",
@@ -68,37 +70,39 @@ namespace COC.Application
             return oauth2.AccessToken;
         }
 
-        private static string GetDropboxMail(string token)
-        {
-            var dbc = new DropboxClient(token);
-            var a = dbc.Users.GetCurrentAccountAsync().Result;
-            return a.Email;
-        }
-
-        //TODO рабочий GetYandexMail
-        private static string GetYandexMail(string token)
-        {
-            return "sigmarblessme@gmail.com"; //а что поделать...
-        }
+        // private static string GetDropboxMail(string token)
+        // {
+        //     var dbc = new DropboxClient(token);
+        //     var a = dbc.Users.GetCurrentAccountAsync().Result;
+        //     return a.Email;
+        // }
+        //
+        // //TODO рабочий GetYandexMail
+        // private static string GetYandexMail(string token)
+        // {
+        //     return "sigmarblessme@gmail.com"; //а что поделать...
+        // }
         
-        public static void AddToken(string token, string service)
+        public static Account AddToken(string token, string name, string service)
         {
-            var mail = service switch
+            if (name == "")
             {
-                "dropbox" => GetDropboxMail(token),
-                "yandex" => GetYandexMail(token),
-                _ => throw new ArgumentException("Unknown service")
-            };
-
-            if(MailToAccount.ContainsKey(mail))
-                MailToAccount[mail].ServicesTokens[service] = token;
+                name = freeId.ToString();
+                freeId++;
+            }
+            
+            if(NameToAccount.ContainsKey(name))
+                NameToAccount[name].ServicesTokens[service] = token;
             else
             {
-                MailToAccount.Add(mail, new Account(mail)
+                NameToAccount.Add(name, new Account(name)
                 {
                     ServicesTokens = {[service] = token}
                 });
             }
+
+            var account = NameToAccount[name];
+            return account;
         }
     }
 }
