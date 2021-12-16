@@ -7,7 +7,7 @@ namespace COC.ConsoleInterface
 {
     public static class Program
     {
-        private static bool isRunning = true;
+        public static bool isRunning = true;
         private static void Main(string[] args)
         {
             Initialize();
@@ -16,7 +16,7 @@ namespace COC.ConsoleInterface
             while(isRunning)
             {
                 Console.Write($"{FileSystemManager.CurrentFolder.Path}> ");
-                InputManager.ReadCommand(ref isRunning);    
+                InputManager.ReadCommand();    
             }
         }
 
