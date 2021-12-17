@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using COC.Application;
 using COC.Infrastructure;
+using Dropbox.Api.Files;
 using YandexDisk.Client.Clients;
 using YandexDisk.Client.Http;
 using File = System.IO.File;
@@ -16,18 +18,77 @@ namespace COC.Yandex
         public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var yandexClient = new DiskHttpApi(account.ServicesTokens["yandex"]);
-            var file = File.Open(fileToUploadPath, FileMode.Open, FileAccess.Read);
-            Task.Run(() => yandexClient.Files.UploadFileAsync(pathToUpload, false, file));
             var name = fileToUploadPath.Split('\\').Last();
-            if (name.Split('.').Length == 2)
-                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(pathToUpload, account));
-            else
-                YandexDataLoader.GetFolders(account, pathToUpload, yandexClient);
-            // YandexDataLoader.GetFolders(account, pathToUpload, yandexClient);
-            //             if (metadata.IsFile)
-            //     FileSystemManager.CurrentFolder.Content.Add(metadata.Name, new Infrastructure.File(pathToUpload, account));
-            // else
-            //     DropboxDataLoader.GetFolders(account, pathToUpload, dropboxClient);
+            if (File.Exists(fileToUploadPath))
+            {
+                var file = UploadSingleFile(pathToUpload, fileToUploadPath, yandexClient, account);
+                FileSystemManager.CurrentFolder.Content.Add(name, file);
+            }
+            if (Directory.Exists(fileToUploadPath))
+            {
+                var folder = UploadFolder(pathToUpload, fileToUploadPath, yandexClient, account, FileSystemManager.CurrentFolder);
+                if (folder != null)
+                    FileSystemManager.CurrentFolder.Content.Add(name, folder);
+            }
         }
+
+        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account, Folder parentFolder)
+        {
+            if (!Directory.Exists(fileToUploadPath))
+            {
+                Console.WriteLine("There is no such directory");
+                return null;
+            }
+
+            var directory = client.Commands.CreateDictionaryAsync(pathToUpload).Result;
+            var localFolder = new Folder($"Root/{account.AccountName}/yandex{pathToUpload}", new Dictionary<string, IFileSystemUnit>(), account);
+            localFolder.ParentFolder = parentFolder;
+            foreach (var subdirectory in Directory.GetDirectories(fileToUploadPath))
+            {
+                var name = subdirectory.Split('\\').Last();
+                var subFolder = UploadFolder(pathToUpload + '/' + name, subdirectory, client, account, localFolder);
+                localFolder.Content.Add(name, subFolder);
+            }
+
+            foreach (var file in Directory.GetFiles(fileToUploadPath))
+            {
+                var name = file.Split('\\').Last();
+                var localFile = UploadSingleFile(pathToUpload + '/' + name, file, client, account);
+                localFolder.Content.Add(name, localFile);
+            }
+
+            return localFolder;
+        }
+
+        private static Infrastructure.File UploadSingleFile(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account)
+        {
+            var file = File.Open(fileToUploadPath, FileMode.Open, FileAccess.Read);
+            var name = fileToUploadPath.Split('\\').Last();
+            Console.WriteLine("Uploading " + name);
+            Task.Run(() => client.Files.UploadFileAsync(pathToUpload, false, file));
+            return new Infrastructure.File(pathToUpload, account);
+        }
+        //cd Leonid/yandex/YandexFolder1
+        //upload F:\COCtest
+
+
+        
+        // public static long DirSize(DirectoryInfo d) 
+        // {    
+        //     long size = 0;    
+        //     // Add file sizes.
+        //     FileInfo[] fis = d.GetFiles();
+        //     foreach (FileInfo fi in fis) 
+        //     {      
+        //         size += fi.Length;    
+        //     }
+        //     // Add subdirectory sizes.
+        //     DirectoryInfo[] dis = d.GetDirectories();
+        //     foreach (DirectoryInfo di in dis) 
+        //     {
+        //         size += DirSize(di);   
+        //     }
+        //     return size;  
+        // }
     }
 }

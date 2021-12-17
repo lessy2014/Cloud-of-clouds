@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using COC.Application;
 using COC.Infrastructure;
 using Dropbox.Api;
@@ -12,43 +14,68 @@ namespace COC.Dropbox
 {
     public static class DropboxUploader
     {
+        //cd Leonid/dropbox/Folder1
+        //upload F:\COCtest
+        //upload F:\COCtest\txt2.txt
+        
         public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var dropboxClient = new DropboxClient(account.ServicesTokens["dropbox"]);
-            // var a = dropboxClient.Files.UploadSessionStartAsync().Result;
-            Task.Run(() => Upload(fileToUploadPath, pathToUpload, dropboxClient, account));
-            // var id = a.SessionId;
-            // var b = dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(id, 0));
-            // var file = File.Open(fileToUploadPath, FileMode.Open, FileAccess.Read);
-            // var metadata = dropboxClient.Files.UploadAsync(pathToUpload, WriteMode.Add.Instance,
-            //     body: file).Result;
-            // if (metadata.IsFile)
-            //     FileSystemManager.CurrentFolder.Content.Add(metadata.Name, new Infrastructure.File(pathToUpload, account));
-            // else
-            //     DropboxDataLoader.GetFolders(account, pathToUpload, dropboxClient);
+            var name = fileToUploadPath.Split('\\').Last();
+            if (File.Exists(fileToUploadPath))
+            {
+                Console.WriteLine("Uploading " + name);
+                Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
+                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(pathToUpload, account));
+            }
+            if (Directory.Exists(fileToUploadPath))
+            {
+                var folder = UploadFolder(pathToUpload, fileToUploadPath, dropboxClient, account, FileSystemManager.CurrentFolder);
+                FileSystemManager.CurrentFolder.Content.Add(name, folder);
+            }
+        }
+        
+        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DropboxClient client, Account account, Folder parentFolder)
+        {
+            var directory = client.Files.CreateFolderV2Async(pathToUpload).Result;
+            var localFolder = new Folder($"Root/{account.AccountName}/dropbox{pathToUpload}", new Dictionary<string, IFileSystemUnit>(), account);
+            localFolder.ParentFolder = parentFolder;
+            foreach (var subdirectory in Directory.GetDirectories(fileToUploadPath))
+            {
+                var name = subdirectory.Split('\\').Last();
+                var subFolder = UploadFolder(pathToUpload + '/' + name, subdirectory, client, account, localFolder);
+                localFolder.Content.Add(name, subFolder);
+            }
+
+            foreach (var file in Directory.GetFiles(fileToUploadPath))
+            {
+                var name = file.Split('\\').Last();
+                Console.WriteLine("Uploading " + name);
+                Task.Run(() => UploadSingleFile(file, pathToUpload + '/' + name, client));
+                var localFile = new Infrastructure.File(name, account);
+                localFolder.Content.Add(name, localFile);
+            }
+
+            return localFolder;
         }
 
-        private static async Task Upload(string localPath, string remotePath, DropboxClient client, Account account)
+        private static async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
         {
             const int ChunkSize = 4096 * 1024;
             using (var fileStream = File.Open(localPath, FileMode.Open))
             {
                 if (fileStream.Length <= ChunkSize)
                 {
-                    var metadata =await client.Files.UploadAsync(remotePath, body: fileStream);
-                    if (metadata.IsFile)
-                        FileSystemManager.CurrentFolder.Content.Add(metadata.Name, new Infrastructure.File(remotePath, account));
-                    else
-                        DropboxDataLoader.GetFolders(account, remotePath, client);
+                    var metadata = client.Files.UploadAsync(remotePath, body: fileStream).Result;
                 }
                 else
                 {
-                    await ChunkUpload(remotePath, fileStream, (int)ChunkSize, client, account);
+                    await ChunkUpload(remotePath, fileStream, (int)ChunkSize, client);
                 }
             }
         }
 
-        private static async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client, Account account)
+        private static async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client)
         {
             ulong numChunks = (ulong)Math.Ceiling((double)stream.Length / chunkSize);
             byte[] buffer = new byte[chunkSize];
@@ -71,11 +98,6 @@ namespace COC.Dropbox
                         if (idx == numChunks - 1)
                         {
                             FileMetadata metadata = await client.Files.UploadSessionFinishAsync(cursor, new CommitInfo(path), memStream);
-                            if (metadata.IsFile)
-                                FileSystemManager.CurrentFolder.Content.Add(metadata.Name, new Infrastructure.File(path, account));
-                            else
-                                DropboxDataLoader.GetFolders(account, path, client);
-                            // Console.WriteLine (fileMetadata.PathDisplay);
                         }
                         else
                         {
