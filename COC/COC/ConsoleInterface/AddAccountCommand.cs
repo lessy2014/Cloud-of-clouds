@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Windows.Input;
 using COC.Application;
 using CommandLine;
@@ -19,23 +20,31 @@ namespace COC.ConsoleInterface
 
         public void Execute(object parameter)
         {
+            var path = AppDomain.CurrentDomain.BaseDirectory + '\\' + "tokens.txt";
+            Account account = null;
             ServiceName = ServiceName.ToLower();
             if (ServiceName == "yandex")
             {
-                var account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.YandexOAuth2), ServiceName,
+                account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.YandexOAuth2), ServiceName,
                     ServiceName);
                 DataLoader.GetFoldersFromNewAccount(account, ServiceName);
-                // Yandex.YandexDataLoader.GetFolders(account, "",
-                //     new DiskHttpApi(account.ServicesTokens[argument]));
             }
             else if (ServiceName.ToLower() == "dropbox")
             {
-                var account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.DropboxOAuth2), ServiceName,
+                account = TokenStorage.AddToken(TokenStorage.GetToken(TokenStorage.DropboxOAuth2), ServiceName,
                     ServiceName.ToLower());
                 DataLoader.GetFoldersFromNewAccount(account, ServiceName);
             }
             else
                 Console.WriteLine("Unsupported service");
+
+            if (account != null)
+            {
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(account.ServicesTokens[ServiceName] + ' ' + account.AccountName + ' ' + ServiceName);
+                }	
+            }
         }
 
         public event EventHandler CanExecuteChanged;
