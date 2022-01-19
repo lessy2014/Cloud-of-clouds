@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using COC.Application;
+using COC.ConsoleInterface;
 using COC.Infrastructure;
-using Dropbox.Api.Files;
+using Ninject;
 using YandexDisk.Client.Clients;
 using YandexDisk.Client.Http;
 using File = System.IO.File;
@@ -13,9 +14,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace COC.Yandex
 {
-    public static class YandexUploader
+    public class YandexUploader : IUploader
     {
-        public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
+        public void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var yandexClient = new DiskHttpApi(account.ServicesTokens["yandex"]);
             var name = fileToUploadPath.Split('\\').Last();
@@ -24,15 +25,18 @@ namespace COC.Yandex
                 var file = UploadSingleFile(pathToUpload, fileToUploadPath, yandexClient, account);
                 FileSystemManager.CurrentFolder.Content.Add(name, file);
             }
+
             if (Directory.Exists(fileToUploadPath))
             {
-                var folder = UploadFolder(pathToUpload, fileToUploadPath, yandexClient, account, FileSystemManager.CurrentFolder);
+                var folder = UploadFolder(pathToUpload, fileToUploadPath, yandexClient, account,
+                    FileSystemManager.CurrentFolder);
                 if (folder != null)
                     FileSystemManager.CurrentFolder.Content.Add(name, folder);
             }
         }
 
-        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account, Folder parentFolder)
+        private Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account,
+            Folder parentFolder)
         {
             if (!Directory.Exists(fileToUploadPath))
             {
@@ -41,7 +45,12 @@ namespace COC.Yandex
             }
 
             var directory = client.Commands.CreateDictionaryAsync(pathToUpload).Result;
-            var localFolder = new Folder($"Root/{account.AccountName}/yandex{pathToUpload}", new Dictionary<string, IFileSystemUnit>(), account);
+            var pathArg =
+                new Ninject.Parameters.ConstructorArgument("path", $"Root/{account.AccountName}/yandex{pathToUpload}");
+            var contentArg =
+                new Ninject.Parameters.ConstructorArgument("content", new Dictionary<string, IFileSystemUnit>());
+            var accountArg = new Ninject.Parameters.ConstructorArgument("account", account);
+            var localFolder = Program.container.Get<Folder>(pathArg, contentArg, accountArg);
             localFolder.ParentFolder = parentFolder;
             foreach (var subdirectory in Directory.GetDirectories(fileToUploadPath))
             {
@@ -60,7 +69,8 @@ namespace COC.Yandex
             return localFolder;
         }
 
-        private static Infrastructure.File UploadSingleFile(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account)
+        private Infrastructure.File UploadSingleFile(string pathToUpload, string fileToUploadPath, DiskHttpApi client,
+            Account account)
         {
             var file = File.Open(fileToUploadPath, FileMode.Open, FileAccess.Read);
             var name = fileToUploadPath.Split('\\').Last();
@@ -72,7 +82,6 @@ namespace COC.Yandex
         //upload F:\COCtest
 
 
-        
         // public static long DirSize(DirectoryInfo d) 
         // {    
         //     long size = 0;    

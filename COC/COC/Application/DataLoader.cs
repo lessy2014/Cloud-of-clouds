@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using COC.Dropbox;
 using COC.Infrastructure;
 using COC.Yandex;
-using Dropbox.Api;
-using YandexDisk.Client.Http;
-
 
 namespace COC.Application
 {
     public class DataLoader
     {
         private readonly List<Account> accounts;
+        private IDataLoader dataLoader;
 
         public void InitializeFileSystem()
         {
             var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var account in accounts)
             {
-                var mailFolder = new Folder($"Root/{account.AccountName}");
+                var AccountFolder = new Folder($"Root/{account.AccountName}");
                 foreach (var serviceToken in account.ServicesTokens)
                 {
                     try
                     {
-                        mailFolder.Content.Add(serviceToken.Key,
-                            GetFolders(account, serviceToken.Key, serviceToken.Value));
+                        dataLoader = serviceToken.Key == "dropbox"? new DropboxDataLoader(): new YandexDataLoader();
+                        AccountFolder.Content.Add(serviceToken.Key,
+                            GetFolders(account, serviceToken.Value, dataLoader));
                     }
                     catch (AggregateException)
                     {
@@ -37,13 +36,13 @@ namespace COC.Application
                     }
                 }
 
-                mailFolder.ParentFolder = root;
-                foreach (var folder in mailFolder.Content.Values)
+                AccountFolder.ParentFolder = root;
+                foreach (var folder in AccountFolder.Content.Values)
                 {
-                    ((Folder) folder).ParentFolder = mailFolder;
+                    ((Folder) folder).ParentFolder = AccountFolder;
                 }
 
-                root.Content.Add(mailFolder.Name, mailFolder);
+                root.Content.Add(AccountFolder.Name, AccountFolder);
             }
 
             Folder.SetRoot(root);
@@ -51,28 +50,14 @@ namespace COC.Application
             FileSystemManager.CurrentFolder = root;
         }
 
-        private static Folder GetFolders(Account account, string service, string token)
+        private static Folder GetFolders(Account account, string token, IDataLoader dataLoader)
         {
-            switch (service)
-            {
-                case "yandex":
-                {
-                    DiskHttpApi client = null;
-                    client = new DiskHttpApi(token);
-                    return YandexDataLoader.GetFolders(account, "", client);
-                }
-                case "dropbox":
-                {
-                    var dropboxClient = new DropboxClient(token);
-                    return DropboxDataLoader.GetFolders(account, "", dropboxClient);
-                }
-                default:
-                    throw new ArgumentException("Unknown service");
-            }
+            return dataLoader.GetFolders(account, "", token);
         }
         
         public static void GetFoldersFromNewAccount(Account account, string service)
         {
+            IDataLoader dataLoader = service == "dropbox"? new DropboxDataLoader(): new YandexDataLoader();
             Folder mailFolder;
             if (Folder.Root.Content.ContainsKey(account.AccountName))
             {
@@ -83,7 +68,7 @@ namespace COC.Application
                 mailFolder = new Folder($"Root/{account.AccountName}") {ParentFolder = Folder.Root};
                 Folder.Root.Content.Add(mailFolder.Name, mailFolder);
             }
-            mailFolder.Content.Add(service, GetFolders(account, service, account.ServicesTokens[service]));
+            mailFolder.Content.Add(service, GetFolders(account, account.ServicesTokens[service], dataLoader));
             
             foreach (var folder in mailFolder.Content.Values)
             {

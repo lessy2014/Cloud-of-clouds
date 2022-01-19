@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 using COC.Application;
 using COC.Infrastructure;
 using CommandLine;

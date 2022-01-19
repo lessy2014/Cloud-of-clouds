@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using COC.Dropbox;
 using COC.Infrastructure;
-using COC.Yandex;
 
 namespace COC.Application
 {
@@ -27,18 +25,7 @@ namespace COC.Application
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
                 Console.WriteLine("You can't upload file into file");
-            else switch (service)
-            {
-                case "yandex":
-                    YandexUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
-                    break;
-                case "dropbox":
-                    DropboxUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
-                    break;
-                default:
-                    Console.WriteLine("Unknown service");
-                    break;
-            }
+            fileSystemUnit.Service.Uploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
         }
     }
 }

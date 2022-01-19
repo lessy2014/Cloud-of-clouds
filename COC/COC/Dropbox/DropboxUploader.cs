@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using COC.Application;
+using COC.ConsoleInterface;
 using COC.Infrastructure;
 using Dropbox.Api;
 using Dropbox.Api.Files;
+using Ninject;
 using File = System.IO.File;
 using Task = System.Threading.Tasks.Task;
 
 
 namespace COC.Dropbox
 {
-    public static class DropboxUploader
+    public class DropboxUploader : IUploader
     {
-        //cd Leonid/dropbox/Folder1
-        //upload F:\COCtest
-        //upload F:\COCtest\txt2.txt
-        
-        public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
+        public void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var dropboxClient = new DropboxClient(account.ServicesTokens["dropbox"]);
             var name = fileToUploadPath.Split('\\').Last();
@@ -28,17 +26,25 @@ namespace COC.Dropbox
                 Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
                 FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(pathToUpload, account));
             }
+
             if (Directory.Exists(fileToUploadPath))
             {
-                var folder = UploadFolder(pathToUpload, fileToUploadPath, dropboxClient, account, FileSystemManager.CurrentFolder);
+                var folder = UploadFolder(pathToUpload, fileToUploadPath, dropboxClient, account,
+                    FileSystemManager.CurrentFolder);
                 FileSystemManager.CurrentFolder.Content.Add(name, folder);
             }
         }
-        
-        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DropboxClient client, Account account, Folder parentFolder)
+
+        private Folder UploadFolder(string pathToUpload, string fileToUploadPath, DropboxClient client, Account account,
+            Folder parentFolder)
         {
             var directory = client.Files.CreateFolderV2Async(pathToUpload).Result;
-            var localFolder = new Folder($"Root/{account.AccountName}/dropbox{pathToUpload}", new Dictionary<string, IFileSystemUnit>(), account);
+            var pathArg =
+                new Ninject.Parameters.ConstructorArgument("path", $"Root/{account.AccountName}/dropbox{pathToUpload}");
+            var contentArg =
+                new Ninject.Parameters.ConstructorArgument("content", new Dictionary<string, IFileSystemUnit>());
+            var accountArg = new Ninject.Parameters.ConstructorArgument("account", account);
+            var localFolder = Program.container.Get<Folder>(pathArg, contentArg, accountArg);
             localFolder.ParentFolder = parentFolder;
             foreach (var subdirectory in Directory.GetDirectories(fileToUploadPath))
             {
@@ -59,7 +65,7 @@ namespace COC.Dropbox
             return localFolder;
         }
 
-        private static async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
+        private async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
         {
             const int ChunkSize = 4096 * 1024;
             using (var fileStream = File.Open(localPath, FileMode.Open))
@@ -70,14 +76,14 @@ namespace COC.Dropbox
                 }
                 else
                 {
-                    await ChunkUpload(remotePath, fileStream, (int)ChunkSize, client);
+                    await ChunkUpload(remotePath, fileStream, (int) ChunkSize, client);
                 }
             }
         }
 
-        private static async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client)
+        private async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client)
         {
-            ulong numChunks = (ulong)Math.Ceiling((double)stream.Length / chunkSize);
+            ulong numChunks = (ulong) Math.Ceiling((double) stream.Length / chunkSize);
             byte[] buffer = new byte[chunkSize];
             string sessionId = null;
             for (ulong idx = 0; idx < numChunks; idx++)
@@ -88,16 +94,18 @@ namespace COC.Dropbox
                 {
                     if (idx == 0)
                     {
-                        var result = await client.Files.UploadSessionStartAsync(false, UploadSessionType.Sequential.Instance, memStream);
+                        var result = await client.Files.UploadSessionStartAsync(false,
+                            UploadSessionType.Sequential.Instance, memStream);
                         sessionId = result.SessionId;
                     }
                     else
                     {
-                        var cursor = new UploadSessionCursor(sessionId, (ulong)chunkSize * idx);
+                        var cursor = new UploadSessionCursor(sessionId, (ulong) chunkSize * idx);
 
                         if (idx == numChunks - 1)
                         {
-                            FileMetadata metadata = await client.Files.UploadSessionFinishAsync(cursor, new CommitInfo(path), memStream);
+                            FileMetadata metadata =
+                                await client.Files.UploadSessionFinishAsync(cursor, new CommitInfo(path), memStream);
                         }
                         else
                         {

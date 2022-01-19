@@ -1,32 +1,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using COC.Application;
+using COC.ConsoleInterface;
+using Ninject;
 
 namespace COC.Infrastructure
 {
-    public class Folder: IFileSystemUnit
+    public class Folder : IFileSystemUnit
     {
         public Dictionary<string, IFileSystemUnit> Content = new Dictionary<string, IFileSystemUnit>();
 
         public static Folder Root;
         public string Path { get; set; }
         public string Name { get; set; }
-        public string Mail { get; set; }
-        
         public Account Account { get; }
 
         public Folder ParentFolder;
+
+        public IService Service { get; set; }
 
         public Folder(string path)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
         }
-        
+
         public Folder(string path, Dictionary<string, IFileSystemUnit> content)
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
+            if(path.Split('/').Length>2)
+                Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
             Content = content;
         }
 
@@ -34,8 +38,10 @@ namespace COC.Infrastructure
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
-            Mail = account.AccountName;
             Content = content;
+            if(path.Split('/').Length>2)
+                Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
+
             Account = account;
         }
 

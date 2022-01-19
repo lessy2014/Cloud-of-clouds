@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using COC.Dropbox;
 using COC.Infrastructure;
-using COC.Yandex;
 
 namespace COC.Application
 {
@@ -19,22 +17,9 @@ namespace COC.Application
             
             var service = splittedPath[2];
             var path = "/" + string.Join("/", splittedPath.Skip(3));
-            var mail = fileSystemUnit.Mail;
             var token = fileSystemUnit.Account.ServicesTokens[service];
-            switch (service)
-            {
-                case "yandex":
-                    Console.WriteLine(YandexDownloader.DownloadFile(path, token));
-                    break;
-                case "dropbox":
-                {
-                    var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
-                    Console.WriteLine(DropboxDownloader.DownloadFIle(path, token, isFile));
-                    break;
-                }
-                default:
-                    throw new ArgumentException("Unknown service");
-            }
+            var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
+            Console.WriteLine(fileSystemUnit.Service.Downloader.DownloadFile(path, token, isFile));
         }
     }
 }

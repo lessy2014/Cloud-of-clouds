@@ -11,7 +11,6 @@ namespace COC.Application
     {
         private static string pathToTokensTxt = AppDomain.CurrentDomain.BaseDirectory + '\\' + "tokens.txt";
         private static string[] legitServices = {"yandex", "dropbox"};
-        // private static Dictionary<string, Account> accounts = new Dictionary<string, Account>();
         public readonly string AccountName;
         public readonly Dictionary<string, string> ServicesTokens;
 
@@ -112,11 +111,7 @@ namespace COC.Application
                 string line;
                 while ((line = reader.ReadLine()) != null) 
                 {
-                    if (line == "")
-                        continue;
-                    if (line.Split().Length != 3)
-                        continue;
-                    if (line.Split()[1] == accountName)
+                    if (line == "" || line.Split().Length != 3 || line.Split()[1] == accountName)
                         continue;
                     newLines.Add(line);
                 }
