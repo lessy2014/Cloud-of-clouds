@@ -29,7 +29,7 @@ namespace COC.Dropbox
                     return;
                 }
                 Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
-                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(FileSystemManager.CurrentFolder.Path + pathToUpload, account));
+                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(FileSystemManager.CurrentFolder.Path + '/' + name, account));
             }
 
             if (Directory.Exists(fileToUploadPath))
