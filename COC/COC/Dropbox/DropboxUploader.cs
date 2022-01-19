@@ -29,7 +29,7 @@ namespace COC.Dropbox
                     return;
                 }
                 Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
-                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(pathToUpload, account));
+                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(FileSystemManager.CurrentFolder.Path + pathToUpload, account));
             }
 
             if (Directory.Exists(fileToUploadPath))
@@ -70,7 +70,7 @@ namespace COC.Dropbox
                 var name = file.Split('\\').Last();
                 Console.WriteLine("Uploading " + name);
                 Task.Run(() => UploadSingleFile(file, pathToUpload + '/' + name, client));
-                var localFile = new Infrastructure.File(localFolder.Path+name, account);
+                var localFile = new Infrastructure.File(localFolder.Path + '/' + name, account);
                 localFolder.Content.Add(name, localFile);
             }
 
@@ -79,7 +79,7 @@ namespace COC.Dropbox
 
         private async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
         {
-            const int ChunkSize = 4096 * 1024;
+            const int ChunkSize = 4096 * 4096;
             using (var fileStream = File.Open(localPath, FileMode.Open))
             {
                 if (fileStream.Length <= ChunkSize)
