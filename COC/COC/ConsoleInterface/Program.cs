@@ -26,13 +26,14 @@ namespace COC.ConsoleInterface
         {
             var path = AppDomain.CurrentDomain.BaseDirectory + '\\' + "tokens.txt";
             
+            Account.DeleteIncorrectLines();
             foreach (var line in File.ReadLines(path))
             {
                 if (line == "")
                     continue;
                 var data = line.Split(' ');
                 if (data.Length != 3)
-                    Console.WriteLine($"WARNING: Incorrect format of line \"{line}\". Please, remove it manually in tokens.txt.");
+                    Console.WriteLine($"WARNING: Incorrect format of line \"{line}\". Please, remove it manually in tokens.txt or using .");
                 else
                 {
                     var token = data[0];

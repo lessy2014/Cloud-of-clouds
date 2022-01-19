@@ -35,7 +35,7 @@ namespace COC.Application
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine($"WARNING: Account {account.AccountName} using unsupported service {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line or using delete_account command.");
+                        Console.WriteLine($"WARNING: Account {account.AccountName} uses unsupported service {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line or using delete_account command.");
                     }
                 }
 
@@ -60,17 +60,24 @@ namespace COC.Application
         
         public static void GetFoldersFromNewAccount(Account account, string service)
         {
-            var mailFolder = new Folder($"Root/{account.AccountName}");
-            mailFolder.Content.Add(service, GetFolders(account, account.ServicesTokens[service, getDataLoader()]));
+            Folder mailFolder;
+            if (Folder.Root.Content.ContainsKey(account.AccountName))
+            {
+                mailFolder = (Folder)Folder.Root.Content[account.AccountName];
+            }
+            else
+            {
+                mailFolder = new Folder($"Root/{account.AccountName}") {ParentFolder = Folder.Root};
+                Folder.Root.Content.Add(mailFolder.Name, mailFolder);
+            }
+            mailFolder.Content.Add(service, GetFolders(account, service, account.ServicesTokens[service]));
             
-
-            mailFolder.ParentFolder = Folder.Root;
             foreach (var folder in mailFolder.Content.Values)
             {
                 ((Folder) folder).ParentFolder = mailFolder;
             }
-
-            Folder.Root.Content.Add(mailFolder.Name, mailFolder);
+            
+            // Folder.Root.Content.Add(mailFolder.Name, mailFolder);
         }
         
         public DataLoader(List<Account> accounts)

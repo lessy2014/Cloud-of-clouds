@@ -20,6 +20,8 @@ namespace COC.ConsoleInterface
                     DownloadCommand,
                     UploadCommand,
                     AddAccountCommand,
+                    DeleteAccountCommand,
+                    DeleteServiceCommand,
                     FindCommand
                 >(HandleInput(command))
                 .WithParsed<ICommand>(command1 => command1.Execute());
