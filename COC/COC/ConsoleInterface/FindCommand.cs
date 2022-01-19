@@ -21,18 +21,10 @@ namespace COC.ConsoleInterface
 
         [Option("fm", Required = false, HelpText = "Show only names that completely match the request")]
         public bool FullMatch { get; set; }
-        
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
+        public void Execute()
         {
             Finder.Find(FileSystemManager.CurrentFolder, Name, new List<IFilter>{ExtensionFilter, TypeFilter}, FullMatch);
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 
     public interface IFilter

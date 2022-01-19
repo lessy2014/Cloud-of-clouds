@@ -10,19 +10,12 @@ namespace COC.ConsoleInterface
     [Verb("upload", HelpText = "Upload file")]
     public class UploadCommand: ICommand
     {
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
         [Value(index:0, Required = true, HelpText = "Path to file")]
         public string PathToFile { get; set; }
 
-        public void Execute(object parameter)
+        public void Execute()
         { 
             Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile);
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

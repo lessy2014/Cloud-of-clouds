@@ -10,15 +10,10 @@ namespace COC.ConsoleInterface
     [Verb("download", HelpText = "Download file or folder")]
     public class DownloadCommand: ICommand
     {
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-        
         [Value(index: 0, Required = false, HelpText = "Name of file or folder")]
         public string objectName { get; set; }
 
-        public void Execute(object parameter)
+        public void Execute()
         {
             try
             {
@@ -38,7 +33,5 @@ namespace COC.ConsoleInterface
                 Console.WriteLine(e.ToString());
             }
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

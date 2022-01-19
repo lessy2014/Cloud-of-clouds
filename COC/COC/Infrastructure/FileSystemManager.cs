@@ -8,6 +8,7 @@ namespace COC.Infrastructure
     {
         private static string CurrentPath = "";
         public static Folder CurrentFolder;
+        public static int AccountsCount;
 
         public static Folder GetFolder(string path)
         {

@@ -13,16 +13,9 @@ namespace COC.ConsoleInterface
         [Value(index: 0, Required = true, HelpText = "Path to another folder")]
         public string Path { get; set; }
         
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
+        public void Execute()
         {
             FileSystemManager.MoveToFolder(Path);
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

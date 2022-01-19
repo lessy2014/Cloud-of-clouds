@@ -7,16 +7,9 @@ namespace COC.ConsoleInterface
     [Verb("close", HelpText = "Close the program")]
     public class CloseCommand: ICommand
     {
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
+        public void Execute()
         {
             Program.isRunning = false;
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

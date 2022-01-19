@@ -22,7 +22,7 @@ namespace COC.ConsoleInterface
                     AddAccountCommand,
                     FindCommand
                 >(HandleInput(command))
-                .WithParsed<ICommand>(command1 => command1.Execute(null));
+                .WithParsed<ICommand>(command1 => command1.Execute());
         }
 
         private static string[] HandleInput(string line)

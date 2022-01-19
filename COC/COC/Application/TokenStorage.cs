@@ -69,19 +69,6 @@ namespace COC.Application
             }
             return oauth2.AccessToken;
         }
-
-        // private static string GetDropboxMail(string token)
-        // {
-        //     var dbc = new DropboxClient(token);
-        //     var a = dbc.Users.GetCurrentAccountAsync().Result;
-        //     return a.Email;
-        // }
-        //
-        // //TODO рабочий GetYandexMail
-        // private static string GetYandexMail(string token)
-        // {
-        //     return "sigmarblessme@gmail.com"; //а что поделать...
-        // }
         
         public static Account AddToken(string token, string name, string service)
         {

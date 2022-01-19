@@ -8,16 +8,9 @@ namespace COC.ConsoleInterface
     [Verb("dir", HelpText = "Show content of current folder")]
     public class DirCommand: ICommand
     {
-        public bool CanExecute(object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object parameter)
+        public void Execute()
         {
             OutputManager.WriteFolderData(FileSystemManager.CurrentFolder);
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }
