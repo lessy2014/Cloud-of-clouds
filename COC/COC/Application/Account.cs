@@ -48,7 +48,7 @@ namespace COC.Application
             }
         }
 
-        public static void DeleteAccount(string serviceName, string accountName)
+        public static void DeleteService(string serviceName, string accountName)
         {
             serviceName = serviceName.ToLower();
             if (Folder.Root.Content.ContainsKey(accountName))
