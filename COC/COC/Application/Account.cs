@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using COC.Infrastructure;
+using File = System.IO.File;
 
 namespace COC.Application
 {
     public class Account
     {
+        private static string pathToTokensTxt = AppDomain.CurrentDomain.BaseDirectory + '\\' + "tokens.txt";
+        private static Dictionary<string, Account> accounts = new Dictionary<string, Account>();
         public readonly string AccountName;
         public readonly Dictionary<string, string> ServicesTokens;
 
@@ -17,7 +21,6 @@ namespace COC.Application
 
         public static void AddAccount(string serviceName, string accountName)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory + '\\' + "tokens.txt";
             Account account = null;
             serviceName = serviceName.ToLower();
             string token;
@@ -38,9 +41,69 @@ namespace COC.Application
             account = TokenStorage.AddToken(token, accountName, serviceName.ToLower());
             DataLoader.GetFoldersFromNewAccount(account, serviceName);
             if (account == null) return;
-            using (StreamWriter sw = File.AppendText(path))
+            accounts.Add(accountName, account);
+            using (StreamWriter sw = File.AppendText(pathToTokensTxt))
             {
                 sw.WriteLine(account.ServicesTokens[serviceName] + ' ' + account.AccountName + ' ' + serviceName);
+            }
+        }
+
+        public static void DeleteAccount(string serviceName, string accountName)
+        {
+            serviceName = serviceName.ToLower();
+            if (Folder.Root.Content.ContainsKey(accountName))
+            {
+                if (Folder.Root.Content[accountName] is Folder && ((Folder)Folder.Root.Content[accountName]).Content.ContainsKey(serviceName))
+                    ((Folder)Folder.Root.Content[accountName]).Content.Remove(serviceName);
+            }
+            else
+            {
+                Console.WriteLine("Account was not added");
+                return;
+            }
+
+            using (StreamReader reader = new StreamReader(pathToTokensTxt)) 
+            {
+                using (StreamWriter writer = new StreamWriter(pathToTokensTxt))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) 
+                    {
+                        if (line == "")
+                            continue;
+                        if (line.Split()[1] == accountName && line.Split()[2] == serviceName)
+                            continue;
+                        writer.WriteLine(line);
+                    }
+                }
+            }
+        }
+
+        public static void DeleteAccount(string accountName)
+        {
+            if (Folder.Root.Content.ContainsKey(accountName))
+            {
+                Folder.Root.Content.Remove(accountName);
+            }
+            else
+            {
+                Console.WriteLine("Account was not added");
+                return;
+            }
+            using (StreamReader reader = new StreamReader(pathToTokensTxt)) 
+            {
+                using (StreamWriter writer = new StreamWriter(pathToTokensTxt))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null) 
+                    {
+                        if (line == "")
+                            continue;
+                        if (line.Split()[1] == accountName)
+                            continue;
+                        writer.WriteLine(line);
+                    }
+                }
             }
         }
     }

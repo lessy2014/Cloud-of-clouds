@@ -31,11 +31,11 @@ namespace COC.Application
                     catch (AggregateException)
                     {
                         Console.WriteLine(
-                            $"WARNING: Probably, account {account.AccountName} has invalid token for {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line.");
+                            $"WARNING: Probably, account {account.AccountName} has invalid token for {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line or using delete_account command.");
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine($"WARNING: Account {account.AccountName} using unsupported service {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line.");
+                        Console.WriteLine($"WARNING: Account {account.AccountName} using unsupported service {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line or using delete_account command.");
                     }
                 }
 

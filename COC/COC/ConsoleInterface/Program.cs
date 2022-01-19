@@ -31,10 +31,15 @@ namespace COC.ConsoleInterface
                 if (line == "")
                     continue;
                 var data = line.Split(' ');
-                var token = data[0];
-                var name = data[1];
-                var service = data[2];
-                TokenStorage.AddToken(token, name, service);
+                if (data.Length != 3)
+                    Console.WriteLine($"WARNING: Incorrect format of line \"{line}\". Please, remove it manually in tokens.txt.");
+                else
+                {
+                    var token = data[0];
+                    var name = data[1];
+                    var service = data[2];
+                    TokenStorage.AddToken(token, name, service);
+                }
             }
             // string token1 = "bqoXZJknL3gAAAAAAAAAAeS2oaOrMkcQg8kKCTITCy9PrBrqJG5xnp3N3xagnHKa";
             // string token2 = "4mUDzkowZAIAAAAAAAAAAb5ko9BO0noUJ0aLye-yVElUpjFGiV1ZwSXwx5gs1FuL";
