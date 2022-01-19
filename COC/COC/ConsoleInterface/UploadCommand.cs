@@ -15,7 +15,7 @@ namespace COC.ConsoleInterface
 
         public void Execute()
         { 
-            Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile);
+            Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile, getUploader());
         }
     }
 }

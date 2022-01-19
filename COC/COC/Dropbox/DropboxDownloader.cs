@@ -1,11 +1,12 @@
 using System;
+using COC.Application;
 using Dropbox.Api;
 
 namespace COC.Dropbox
 {
-    public static class DropboxDownloader
+    public class DropboxDownloader: IDownloader
     {
-        public static string DownloadFIle(string path, string token, bool isFile)
+        public string DownloadFile(string path, string token, bool isFile)
         {
             var dropboxClient = new DropboxClient(token);
             if (isFile)

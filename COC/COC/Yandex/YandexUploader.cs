@@ -13,9 +13,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace COC.Yandex
 {
-    public static class YandexUploader
+    public class YandexUploader: IUploader
     {
-        public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
+        public void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var yandexClient = new DiskHttpApi(account.ServicesTokens["yandex"]);
             var name = fileToUploadPath.Split('\\').Last();
@@ -32,7 +32,7 @@ namespace COC.Yandex
             }
         }
 
-        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account, Folder parentFolder)
+        private Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account, Folder parentFolder)
         {
             if (!Directory.Exists(fileToUploadPath))
             {
@@ -60,7 +60,7 @@ namespace COC.Yandex
             return localFolder;
         }
 
-        private static Infrastructure.File UploadSingleFile(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account)
+        private Infrastructure.File UploadSingleFile(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account)
         {
             var file = File.Open(fileToUploadPath, FileMode.Open, FileAccess.Read);
             var name = fileToUploadPath.Split('\\').Last();

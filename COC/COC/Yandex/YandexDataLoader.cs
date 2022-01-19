@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using COC.Application;
 using COC.Infrastructure;
 using YandexDisk.Client.Http;
 using YandexDisk.Client.Protocol;
@@ -7,9 +8,9 @@ using Account = COC.Application.Account;
 
 namespace COC.Yandex
 {
-    public static class YandexDataLoader
+    public class YandexDataLoader: IDataLoader
     {
-        public static Folder GetFolders(Account account, string path, DiskHttpApi client)
+        public Folder GetFolders(Account account, string path, DiskHttpApi client)
         {
             var tPath = "/"; //TODO кринж кринжов. Рут-папка в яндексе находится по адресу "/", а в dropbox по адресу ""
             if (path != "")  //при этом путь до остальных папок в системе выглядит абсолютно одинаково, поэтому запилил такой костыль
@@ -32,6 +33,12 @@ namespace COC.Yandex
                 ((Folder) internalFolder).ParentFolder = folder;
             }
             return folder;
+        }
+        
+        public Folder GetFolders(Account account, string path, string token)
+        {
+            var dropboxClient = new DiskHttpApi(token);
+            return GetFolders(account, path, dropboxClient);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace COC.Application
 {
     public static class Uploader
     {
-        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath)
+        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath, IUploader uploader)
         {
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 3)
@@ -27,18 +27,7 @@ namespace COC.Application
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
                 Console.WriteLine("You can't upload file into file");
-            else switch (service)
-            {
-                case "yandex":
-                    YandexUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
-                    break;
-                case "dropbox":
-                    DropboxUploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
-                    break;
-                default:
-                    Console.WriteLine("Unknown service");
-                    break;
-            }
+            uploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
         }
     }
 }

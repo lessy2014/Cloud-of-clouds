@@ -19,7 +19,7 @@ namespace COC.ConsoleInterface
             {
                 Downloader.DownloadFile(string.IsNullOrEmpty(objectName)
                     ? FileSystemManager.CurrentFolder
-                    : FileSystemManager.CurrentFolder.Content[objectName]);
+                    : FileSystemManager.CurrentFolder.Content[objectName], getDownloader());
                 // cd sigmarblessme@gmail.com/yandex/YandexFolder1
                 // cd sigmarblessme@gmail.com/dropbox/Folder1
                 // download YandexPresentation1.pptx

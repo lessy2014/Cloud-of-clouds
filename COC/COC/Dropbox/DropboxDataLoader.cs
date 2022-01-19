@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using COC.Application;
 using COC.Infrastructure;
 using Dropbox.Api;
 using Account = COC.Application.Account;
 
 namespace COC.Dropbox
 {
-    public static class DropboxDataLoader
+    public class DropboxDataLoader: IDataLoader
     {
-        public static Folder GetFolders(Account account, string path, DropboxClient client)
+        public Folder GetFolders(Account account, string path, DropboxClient client)
         {
             var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
             var content = new Dictionary<string, IFileSystemUnit>();
@@ -30,5 +31,11 @@ namespace COC.Dropbox
             return folder;
         }
 
+
+        public Folder GetFolders(Account account, string path, string token)
+        {
+            var dropboxClient = new DropboxClient(token);
+            return GetFolders(account, path, dropboxClient);
+        }
     }
 }

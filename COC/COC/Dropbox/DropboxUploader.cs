@@ -12,13 +12,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace COC.Dropbox
 {
-    public static class DropboxUploader
+    public class DropboxUploader: IUploader
     {
         //cd Leonid/dropbox/Folder1
         //upload F:\COCtest
         //upload F:\COCtest\txt2.txt
         
-        public static void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
+        public void UploadFile(string pathToUpload, string fileToUploadPath, Account account)
         {
             var dropboxClient = new DropboxClient(account.ServicesTokens["dropbox"]);
             var name = fileToUploadPath.Split('\\').Last();
@@ -35,7 +35,7 @@ namespace COC.Dropbox
             }
         }
         
-        private static Folder UploadFolder(string pathToUpload, string fileToUploadPath, DropboxClient client, Account account, Folder parentFolder)
+        private Folder UploadFolder(string pathToUpload, string fileToUploadPath, DropboxClient client, Account account, Folder parentFolder)
         {
             var directory = client.Files.CreateFolderV2Async(pathToUpload).Result;
             var localFolder = new Folder($"Root/{account.AccountName}/dropbox{pathToUpload}", new Dictionary<string, IFileSystemUnit>(), account);
@@ -59,7 +59,7 @@ namespace COC.Dropbox
             return localFolder;
         }
 
-        private static async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
+        private async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
         {
             const int ChunkSize = 4096 * 1024;
             using (var fileStream = File.Open(localPath, FileMode.Open))
@@ -75,7 +75,7 @@ namespace COC.Dropbox
             }
         }
 
-        private static async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client)
+        private async Task ChunkUpload(string path, FileStream stream, int chunkSize, DropboxClient client)
         {
             ulong numChunks = (ulong)Math.Ceiling((double)stream.Length / chunkSize);
             byte[] buffer = new byte[chunkSize];
