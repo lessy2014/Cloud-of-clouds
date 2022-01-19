@@ -62,19 +62,27 @@ namespace COC.Application
                 return;
             }
 
-            using (StreamReader reader = new StreamReader(pathToTokensTxt)) 
+            var newLines = new List<string>();
+            using (StreamReader reader = new StreamReader(pathToTokensTxt))
             {
-                using (StreamWriter writer = new StreamWriter(pathToTokensTxt))
+                string line;
+                while ((line = reader.ReadLine()) != null) 
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null) 
-                    {
-                        if (line == "")
-                            continue;
-                        if (line.Split()[1] == accountName && line.Split()[2] == serviceName)
-                            continue;
-                        writer.WriteLine(line);
-                    }
+                    if (line == "")
+                        continue;
+                    if (line.Split().Length != 3)
+                        continue;
+                    if (line.Split()[1] == accountName && line.Split()[2] == serviceName)
+                        continue;
+                    newLines.Add(line);
+                }
+            }
+
+            using (StreamWriter writer = File.CreateText(pathToTokensTxt))
+            {
+                foreach (var line in newLines)
+                {
+                    writer.WriteLine(line);
                 }
             }
         }
@@ -90,19 +98,52 @@ namespace COC.Application
                 Console.WriteLine("Account was not added");
                 return;
             }
-            using (StreamReader reader = new StreamReader(pathToTokensTxt)) 
+
+            var newLines = new List<string>();
+            using (StreamReader reader = new StreamReader(pathToTokensTxt))
             {
-                using (StreamWriter writer = new StreamWriter(pathToTokensTxt))
+                string line;
+                while ((line = reader.ReadLine()) != null) 
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null) 
-                    {
-                        if (line == "")
-                            continue;
-                        if (line.Split()[1] == accountName)
-                            continue;
-                        writer.WriteLine(line);
-                    }
+                    if (line == "")
+                        continue;
+                    if (line.Split().Length != 3)
+                        continue;
+                    if (line.Split()[1] == accountName)
+                        continue;
+                    newLines.Add(line);
+                }
+            }
+
+            using (StreamWriter writer = File.CreateText(pathToTokensTxt))
+            {
+                foreach (var line in newLines)
+                {
+                    writer.WriteLine(line);
+                }
+            }
+        }
+
+        public static void DeleteIncorrectLines()
+        {
+            var newLines = new List<string>();
+            using (StreamReader reader = new StreamReader(pathToTokensTxt))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null) 
+                {
+                    if (line == "")
+                        continue;
+                    if (line.Split().Length != 3)
+                        continue;
+                    newLines.Add(line);
+                }
+            }
+            using (StreamWriter writer = File.CreateText(pathToTokensTxt))
+            {
+                foreach (var line in newLines)
+                {
+                    writer.WriteLine(line);
                 }
             }
         }
