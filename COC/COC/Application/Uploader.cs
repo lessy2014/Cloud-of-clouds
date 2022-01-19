@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using COC.Infrastructure;
+using File = System.IO.File;
 
 namespace COC.Application
 {
@@ -8,6 +10,11 @@ namespace COC.Application
     {
         public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath)
         {
+            if (!File.Exists(fileToUploadPath) && !Directory.Exists(fileToUploadPath))
+            {
+                Console.WriteLine("File or folder does not exist!");
+                return;
+            }
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 3)
             {
