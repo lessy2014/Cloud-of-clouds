@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using COC.Dropbox;
 using COC.Infrastructure;
 using COC.Yandex;
 using Dropbox.Api;
+using Dropbox.Api.TeamLog;
 using YandexDisk.Client.Http;
 
 
@@ -21,8 +23,20 @@ namespace COC.Application
                 var mailFolder = new Folder($"Root/{account.AccountName}");
                 foreach (var serviceToken in account.ServicesTokens)
                 {
-                    mailFolder.Content.Add(serviceToken.Key,
-                        GetFolders(account, serviceToken.Key, serviceToken.Value));
+                    try
+                    {
+                        mailFolder.Content.Add(serviceToken.Key,
+                            GetFolders(account, serviceToken.Key, serviceToken.Value));
+                    }
+                    catch (AggregateException)
+                    {
+                        Console.WriteLine(
+                            $"WARNING: Probably, account {account.AccountName} has invalid token for {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line.");
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine($"WARNING: Account {account.AccountName} using unsupported service {serviceToken.Key}. Delete it manually in tokens.txt by removing corresponding line.");
+                    }
                 }
 
                 mailFolder.ParentFolder = root;
@@ -45,7 +59,8 @@ namespace COC.Application
             {
                 case "yandex":
                 {
-                    var client = new DiskHttpApi(token);
+                    DiskHttpApi client = null;
+                    client = new DiskHttpApi(token);
                     return YandexDataLoader.GetFolders(account, "", client);
                 }
                 case "dropbox":
@@ -62,6 +77,7 @@ namespace COC.Application
         {
             var mailFolder = new Folder($"Root/{account.AccountName}");
             mailFolder.Content.Add(service, GetFolders(account, service, account.ServicesTokens[service]));
+            
 
             mailFolder.ParentFolder = Folder.Root;
             foreach (var folder in mailFolder.Content.Values)

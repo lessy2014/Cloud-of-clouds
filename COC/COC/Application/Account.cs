@@ -33,6 +33,8 @@ namespace COC.Application
                     Console.WriteLine("Unsupported service");
                     return;
             }
+            if (token == "")
+                return;
             account = TokenStorage.AddToken(token, accountName, serviceName.ToLower());
             DataLoader.GetFoldersFromNewAccount(account, serviceName);
             if (account == null) return;
