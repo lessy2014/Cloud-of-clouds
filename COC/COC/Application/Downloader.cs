@@ -13,9 +13,10 @@ namespace COC.Application
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 4)
             {
-                Console.WriteLine("This folder is not downloadable");
+                Console.WriteLine("This file or folder is not downloadable!");
                 return;
             }
+            
             var service = splittedPath[2];
             var path = "/" + string.Join("/", splittedPath.Skip(3));
             var mail = fileSystemUnit.Mail;

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using COC.Dropbox;
 using COC.Infrastructure;
 using COC.Yandex;
 using Dropbox.Api;
-using Dropbox.Api.TeamLog;
 using YandexDisk.Client.Http;
 
 
@@ -91,8 +89,6 @@ namespace COC.Application
             {
                 ((Folder) folder).ParentFolder = mailFolder;
             }
-            
-            // Folder.Root.Content.Add(mailFolder.Name, mailFolder);
         }
         
         public DataLoader(List<Account> accounts)

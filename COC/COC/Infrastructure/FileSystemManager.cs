@@ -49,21 +49,31 @@ namespace COC.Infrastructure
                     if (CheckFolderExistence(folder))
                         CurrentFolder = (Folder) CurrentFolder.Content[folder];
                     else
+                    {
                         CurrentFolder = tempFolder;
+                        return;
+                    }
                 }
             }
             else
             {
+                CurrentFolder = Folder.Root;
                 if (CheckFolderExistence(splittedPath[1]))
                     CurrentFolder = (Folder) Folder.Root.Content[splittedPath[1]];
                 else
+                {
                     CurrentFolder = tempFolder;
+                    return;
+                }
                 for (var i = 2; i < splittedPath.Length; i++)
                 {
                     if (CheckFolderExistence(splittedPath[i]))
                         CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
                     else
+                    {
                         CurrentFolder = tempFolder;
+                        return;
+                    }
                 }
             }
         }
@@ -78,11 +88,8 @@ namespace COC.Infrastructure
                     Console.WriteLine($"{folder} in path is a file!");
                     return false;
                 }
-            else
-            {
-                Console.WriteLine($"Folder {folder} does not exist!");
-                return false;
-            }
+            Console.WriteLine($"Folder {folder} does not exist!");
+            return false;
         }
 
         private static string[] SplitPath(string path)
