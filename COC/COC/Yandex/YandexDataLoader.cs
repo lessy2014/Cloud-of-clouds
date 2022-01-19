@@ -27,7 +27,7 @@ namespace COC.Yandex
                 else
                     content.Add(metadata.Name, new File($"Root/{account.AccountName}/yandex{path}/{metadata.Name}", account));
             }
-            var folder =  new Folder($"Root/{account.AccountName}/yandex{path}", content, account);
+            var folder = new Folder($"Root/{account.AccountName}/yandex{path}", content, account);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) 
             {                                                                                                     
                 ((Folder) internalFolder).ParentFolder = folder;

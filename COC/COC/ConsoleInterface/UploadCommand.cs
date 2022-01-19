@@ -1,5 +1,3 @@
-using System;
-using System.Windows.Input;
 using COC.Application;
 using COC.Infrastructure;
 using CommandLine;
@@ -15,7 +13,7 @@ namespace COC.ConsoleInterface
 
         public void Execute()
         { 
-            Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile, getUploader());
+            Uploader.UploadFile(FileSystemManager.CurrentFolder, PathToFile);
         }
     }
 }

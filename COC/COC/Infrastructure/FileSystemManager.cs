@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Windows.Input;
-using Dropbox.Api.Files;
-
 namespace COC.Infrastructure
 {
     public static class FileSystemManager

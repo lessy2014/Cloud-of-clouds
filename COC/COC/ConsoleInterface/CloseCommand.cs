@@ -1,5 +1,3 @@
-using System;
-using System.Windows.Input;
 using CommandLine;
 
 namespace COC.ConsoleInterface

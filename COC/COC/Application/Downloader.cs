@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
-using COC.Dropbox;
 using COC.Infrastructure;
-using COC.Yandex;
 
 namespace COC.Application
 {
     public static class Downloader
     {
-        public static void DownloadFile(IFileSystemUnit fileSystemUnit, IDownloader downloader)
+        public static void DownloadFile(IFileSystemUnit fileSystemUnit)
         {
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 4)
@@ -18,10 +16,9 @@ namespace COC.Application
             }
             var service = splittedPath[2];
             var path = "/" + string.Join("/", splittedPath.Skip(3));
-            var mail = fileSystemUnit.Mail;
             var token = fileSystemUnit.Account.ServicesTokens[service];
             var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
-            Console.WriteLine(downloader.DownloadFile(path, token, isFile));
+            Console.WriteLine(fileSystemUnit.Service.Downloader.DownloadFile(path, token, isFile));
         }
     }
 }

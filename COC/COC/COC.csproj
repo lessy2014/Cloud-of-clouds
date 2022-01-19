@@ -10,6 +10,7 @@
       <PackageReference Include="chilkat-x64" Version="9.5.0.89" />
       <PackageReference Include="CommandLineParser" Version="2.8.0" />
       <PackageReference Include="Dropbox.Api" Version="6.17.0" />
+      <PackageReference Include="Ninject" Version="3.3.4" />
       <PackageReference Include="YandexDisk.Client" Version="1.3.22" />
     </ItemGroup>
 

@@ -1,9 +1,5 @@
-using System;
-using System.Diagnostics;
-using System.Windows.Input;
 using COC.Infrastructure;
 using CommandLine;
-using Newtonsoft.Json;
 
 namespace COC.ConsoleInterface
 {

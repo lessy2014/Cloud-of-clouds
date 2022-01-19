@@ -6,8 +6,9 @@ namespace COC.Infrastructure
     {
         public string Path { get; set; }
         public string Name { get; set; }
-        public string Mail { get; set; }
-        
+
         public Account Account { get; }
+
+        public IService Service { get; set; }
     }
 }

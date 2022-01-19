@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
-using COC.Dropbox;
 using COC.Infrastructure;
-using COC.Yandex;
 
 namespace COC.Application
 {
     public static class Uploader
     {
-        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath, IUploader uploader)
+        public static void UploadFile(IFileSystemUnit fileSystemUnit, string fileToUploadPath)
         {
             var splittedPath = fileSystemUnit.Path.Split('/');
             if (splittedPath.Length < 3)
@@ -27,7 +25,7 @@ namespace COC.Application
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
                 Console.WriteLine("You can't upload file into file");
-            uploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
+            fileSystemUnit.Service.Uploader.UploadFile(path + '/' + fileName, fileToUploadPath, account);
         }
     }
 }

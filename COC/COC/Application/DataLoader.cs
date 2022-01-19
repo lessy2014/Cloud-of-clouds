@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using COC.Dropbox;
 using COC.Infrastructure;
 using COC.Yandex;
-using Dropbox.Api;
-using Dropbox.Api.TeamLog;
-using YandexDisk.Client.Http;
 
 
 namespace COC.Application
@@ -14,6 +10,7 @@ namespace COC.Application
     public class DataLoader
     {
         private readonly List<Account> accounts;
+        private IDataLoader dataLoader;
 
         public void InitializeFileSystem()
         {
@@ -25,8 +22,9 @@ namespace COC.Application
                 {
                     try
                     {
+                        dataLoader = serviceToken.Key == "dropbox"? new DropboxDataLoader(): new YandexDataLoader();
                         AccountFolder.Content.Add(serviceToken.Key,
-                            GetFolders(account, serviceToken.Value, getDataLoader()));
+                            GetFolders(account, serviceToken.Value, dataLoader));
                     }
                     catch (AggregateException)
                     {
@@ -60,6 +58,7 @@ namespace COC.Application
         
         public static void GetFoldersFromNewAccount(Account account, string service)
         {
+            IDataLoader dataLoader =  service == "dropbox"? new DropboxDataLoader(): new YandexDataLoader();
             Folder mailFolder;
             if (Folder.Root.Content.ContainsKey(account.AccountName))
             {
@@ -70,14 +69,12 @@ namespace COC.Application
                 mailFolder = new Folder($"Root/{account.AccountName}") {ParentFolder = Folder.Root};
                 Folder.Root.Content.Add(mailFolder.Name, mailFolder);
             }
-            mailFolder.Content.Add(service, GetFolders(account, service, account.ServicesTokens[service]));
+            mailFolder.Content.Add(service, GetFolders(account, account.ServicesTokens[service], dataLoader));
             
             foreach (var folder in mailFolder.Content.Values)
             {
                 ((Folder) folder).ParentFolder = mailFolder;
             }
-            
-            // Folder.Root.Content.Add(mailFolder.Name, mailFolder);
         }
         
         public DataLoader(List<Account> accounts)

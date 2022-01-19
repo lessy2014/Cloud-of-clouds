@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 using COC.Application;
 using COC.Infrastructure;
 using CommandLine;
@@ -19,14 +18,7 @@ namespace COC.ConsoleInterface
             {
                 Downloader.DownloadFile(string.IsNullOrEmpty(objectName)
                     ? FileSystemManager.CurrentFolder
-                    : FileSystemManager.CurrentFolder.Content[objectName], getDownloader());
-                // cd sigmarblessme@gmail.com/yandex/YandexFolder1
-                // cd sigmarblessme@gmail.com/dropbox/Folder1
-                // download YandexPresentation1.pptx
-                // upload F:\Leonid Programmes\COCtest\newTXT.txt
-                // upload F:\Leonid Programmes\COCtest\txt2.txt
-                // upload F:\Leonid Programmes\COCtest
-                // upload F:\Leonid Programmes\HW4 python pair task\public-materials\29-profiling\example_2.log
+                    : FileSystemManager.CurrentFolder.Content[objectName]);
             }
             catch (Exception e)
             {

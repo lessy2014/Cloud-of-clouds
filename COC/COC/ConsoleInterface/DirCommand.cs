@@ -1,5 +1,3 @@
-using System;
-using System.Windows.Input;
 using COC.Infrastructure;
 using CommandLine;
 
