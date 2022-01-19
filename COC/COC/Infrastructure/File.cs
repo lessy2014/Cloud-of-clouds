@@ -18,7 +18,6 @@ namespace COC.Infrastructure
             Path = path;
             Name = path.Split('/').LastOrDefault();
             Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
-
             Account = account;
         }
     }

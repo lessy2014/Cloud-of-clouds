@@ -38,12 +38,6 @@ namespace COC.Yandex
         private Folder UploadFolder(string pathToUpload, string fileToUploadPath, DiskHttpApi client, Account account,
             Folder parentFolder)
         {
-            if (!Directory.Exists(fileToUploadPath))
-            {
-                Console.WriteLine("There is no such directory");
-                return null;
-            }
-
             var directory = client.Commands.CreateDictionaryAsync(pathToUpload).Result;
             var localFolder = new Folder($"Root/{account.AccountName}/yandex{pathToUpload}",
                 new Dictionary<string, IFileSystemUnit>(), account)
@@ -74,7 +68,7 @@ namespace COC.Yandex
             var name = fileToUploadPath.Split('\\').Last();
             Console.WriteLine("Uploading " + name);
             Task.Run(() => client.Files.UploadFileAsync(pathToUpload, false, file));
-            return new Infrastructure.File(pathToUpload, account);
+            return new Infrastructure.File(Infrastructure.FileSystemManager.CurrentFolder.Path + '/' + name, account);
         }
         //cd Leonid/yandex/YandexFolder1
         //upload F:\COCtest
