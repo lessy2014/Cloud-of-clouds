@@ -49,13 +49,11 @@ namespace COC.Yandex
             Folder parentFolder)
         {
             var directory = client.Commands.CreateDictionaryAsync(pathToUpload).Result;
-            var pathArg =
-                new Ninject.Parameters.ConstructorArgument("path", $"Root/{account.AccountName}/yandex{pathToUpload}");
-            var contentArg =
-                new Ninject.Parameters.ConstructorArgument("content", new Dictionary<string, IFileSystemUnit>());
-            var accountArg = new Ninject.Parameters.ConstructorArgument("account", account);
-            var localFolder = Program.container.Get<Folder>(pathArg, contentArg, accountArg);
-            localFolder.ParentFolder = parentFolder;
+            var localFolder = new Folder($"Root/{account.AccountName}/yandex{pathToUpload}",
+                new Dictionary<string, IFileSystemUnit>(), account)
+            {
+                ParentFolder = parentFolder
+            };
             foreach (var subdirectory in Directory.GetDirectories(fileToUploadPath))
             {
                 var name = subdirectory.Split('\\').Last();

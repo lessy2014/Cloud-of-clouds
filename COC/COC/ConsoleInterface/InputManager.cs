@@ -27,6 +27,8 @@ namespace COC.ConsoleInterface
         private static string[] HandleInput(string line)
         {
             var elements = line.Split('\"');
+            if (line.LastOrDefault() == '/')
+                line = line.Remove(line.Length - 1);
             if (elements.Length == 1)
                 return Regex.Split(line, " +");
             var path = elements[1];
