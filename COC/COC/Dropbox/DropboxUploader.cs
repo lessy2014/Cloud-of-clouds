@@ -23,12 +23,23 @@ namespace COC.Dropbox
             if (File.Exists(fileToUploadPath))
             {
                 Console.WriteLine("Uploading " + name);
+                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name) && FileSystemManager.CurrentFolder.Content[name] is Infrastructure.File)
+                {
+                    Console.WriteLine("File with this name already exists. You can delete it manually and then upload, rename it or upload in another folder.");
+                    return;
+                }
                 Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
                 FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(pathToUpload, account));
             }
 
             if (Directory.Exists(fileToUploadPath))
             {
+                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name) && FileSystemManager.CurrentFolder.Content[name] is Folder)
+                    if (FileSystemManager.CurrentFolder.Content.ContainsKey(name))
+                    {
+                        Console.WriteLine("Folder with this name already exists. You can delete it manually and then upload, rename it or upload in another folder.");
+                        return;
+                    }
                 var folder = UploadFolder(pathToUpload, fileToUploadPath, dropboxClient, account,
                     FileSystemManager.CurrentFolder);
                 FileSystemManager.CurrentFolder.Content.Add(name, folder);
@@ -39,6 +50,7 @@ namespace COC.Dropbox
             Folder parentFolder)
         {
             var directory = client.Files.CreateFolderV2Async(pathToUpload).Result;
+
             var pathArg =
                 new Ninject.Parameters.ConstructorArgument("path", $"Root/{account.AccountName}/dropbox{pathToUpload}");
             var contentArg =
@@ -58,7 +70,7 @@ namespace COC.Dropbox
                 var name = file.Split('\\').Last();
                 Console.WriteLine("Uploading " + name);
                 Task.Run(() => UploadSingleFile(file, pathToUpload + '/' + name, client));
-                var localFile = new Infrastructure.File(name, account);
+                var localFile = new Infrastructure.File(localFolder.Path+name, account);
                 localFolder.Content.Add(name, localFile);
             }
 
@@ -76,7 +88,7 @@ namespace COC.Dropbox
                 }
                 else
                 {
-                    await ChunkUpload(remotePath, fileStream, (int) ChunkSize, client);
+                    await ChunkUpload(remotePath, fileStream, ChunkSize, client);
                 }
             }
         }

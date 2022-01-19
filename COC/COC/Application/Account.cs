@@ -40,7 +40,7 @@ namespace COC.Application
             if (token == "")
                 return;
             account = TokenStorage.AddToken(token, accountName, serviceName.ToLower());
-            if (account.ServicesTokens.ContainsKey(serviceName))
+            if (Folder.Root.Content.ContainsKey(accountName) && ((Folder) Folder.Root.Content[accountName]).Content.ContainsKey(serviceName))
             {
                 ((Folder) Folder.Root.Content[accountName]).Content.Remove(serviceName);
                 if (FileSystemManager.CurrentFolder.Account == account)
