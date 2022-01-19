@@ -21,7 +21,8 @@ namespace COC.Application
             TokenEndpoint = "https://api.dropboxapi.com/oauth2/token",
             ClientId = "ryj3w3kellyrapb",
             ClientSecret = "1ukvw813zamkzla",
-            CodeChallenge = false
+            CodeChallenge = false,
+            RedirectAllowHtml = "OAUTH2 access successfully granted! You can close this page now."
         };
         
         public static readonly OAuth2 YandexOAuth2 = new OAuth2
@@ -31,9 +32,9 @@ namespace COC.Application
             TokenEndpoint = "https://oauth.yandex.ru/token",
             ClientId = "49e919b546904d4eaa8dede505f9c5cd",
             ClientSecret = "ceafad130ce74956bc3a9b6f971fb003",
-            CodeChallenge = false
+            CodeChallenge = false,
+            RedirectAllowHtml = "OAUTH2 access successfully granted! You can close this page now."
         };
-        
         public static string GetToken(OAuth2 oauth2)
         {
             string url = oauth2.StartAuth();
