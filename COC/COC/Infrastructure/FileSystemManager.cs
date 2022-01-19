@@ -1,3 +1,5 @@
+using System;
+
 namespace COC.Infrastructure
 {
     public static class FileSystemManager
@@ -41,16 +43,42 @@ namespace COC.Infrastructure
             {
                 foreach (var folder in splittedPath)
                 {
-                    CurrentFolder = (Folder) CurrentFolder.Content[folder];
+                    if (CheckFolderExistence(folder))
+                        CurrentFolder = (Folder) CurrentFolder.Content[folder];
+                    else
+                        CurrentFolder = tempFolder;
                 }
             }
             else
             {
-                CurrentFolder = (Folder)Folder.Root.Content[splittedPath[1]];
+                if (CheckFolderExistence(splittedPath[1]))
+                    CurrentFolder = (Folder) Folder.Root.Content[splittedPath[1]];
+                else
+                    CurrentFolder = tempFolder;
                 for (var i = 2; i < splittedPath.Length; i++)
                 {
-                    CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
+                    if (CheckFolderExistence(splittedPath[i]))
+                        CurrentFolder = (Folder)CurrentFolder.Content[splittedPath[i]];
+                    else
+                        CurrentFolder = tempFolder;
                 }
+            }
+        }
+
+        private static bool CheckFolderExistence(string folder)
+        {
+            if (CurrentFolder.Content.ContainsKey(folder))
+                if (CurrentFolder.Content[folder] is Folder)
+                    return true;
+                else
+                {
+                    Console.WriteLine($"{folder} in path is a file!");
+                    return false;
+                }
+            else
+            {
+                Console.WriteLine($"Folder {folder} does not exist!");
+                return false;
             }
         }
 

@@ -40,8 +40,14 @@ namespace COC.Application
             if (token == "")
                 return;
             account = TokenStorage.AddToken(token, accountName, serviceName.ToLower());
+            if (account.ServicesTokens.ContainsKey(serviceName))
+            {
+                ((Folder) Folder.Root.Content[accountName]).Content.Remove(serviceName);
+                if (FileSystemManager.CurrentFolder.Account == account)
+                    FileSystemManager.CurrentFolder = Folder.Root;
+            }
+
             DataLoader.GetFoldersFromNewAccount(account, serviceName);
-            if (account == null) return;
             using (StreamWriter sw = File.AppendText(pathToTokensTxt))
             {
                 sw.WriteLine(account.ServicesTokens[serviceName] + ' ' + account.AccountName + ' ' + serviceName);
@@ -126,14 +132,19 @@ namespace COC.Application
             using (StreamReader reader = new StreamReader(pathToTokensTxt))
             {
                 string line;
+                List<Tuple<string, string>> namesAndServices = new List<Tuple<string, string>>();
                 while ((line = reader.ReadLine()) != null) 
                 {
                     if (line == "")
                         continue;
-                    if (line.Split().Length != 3)
+                    var parts = line.Split();
+                    if (parts.Length != 3)
                         continue;
-                    if (!legitServices.Contains(line.Split()[2]))
+                    if (!legitServices.Contains(parts[2]))
                         continue;
+                    if (namesAndServices.Contains(new Tuple<string, string>(parts[1], parts[2])))
+                        continue;
+                    namesAndServices.Add(new Tuple<string, string>(parts[1], parts[2]));
                     newLines.Add(line);
                 }
             }

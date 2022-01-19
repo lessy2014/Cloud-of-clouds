@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using CommandLine;
+using System.Text.RegularExpressions;
 
 namespace COC.ConsoleInterface
 {
@@ -8,7 +9,7 @@ namespace COC.ConsoleInterface
     { 
         public static void ReadCommand()
         {
-            var command = Console.ReadLine();
+            var command = Console.ReadLine().Trim();
             Parser.Default.ParseArguments<
                     CdCommand, 
                     DirCommand, 
@@ -27,9 +28,9 @@ namespace COC.ConsoleInterface
         {
             var elements = line.Split('\"');
             if (elements.Length == 1)
-                return line.Split();
+                return Regex.Split(line, " +");
             var path = elements[1];
-            var result = elements[0].Split().Concat(new []{path}).Concat(elements[2].Split());
+            var result = Regex.Split(elements[0], " +").Concat(new []{path}).Concat(elements[2].Split());
             return result.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
         }
     }
