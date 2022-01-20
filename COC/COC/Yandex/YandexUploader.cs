@@ -22,12 +22,22 @@ namespace COC.Yandex
             var name = fileToUploadPath.Split('\\').Last();
             if (File.Exists(fileToUploadPath))
             {
+                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name))
+                {
+                    Console.WriteLine("File with this name already exists. You can delete it manually and then upload, rename it or upload in another folder.");
+                    return;
+                }
                 var file = UploadSingleFile(pathToUpload, fileToUploadPath, yandexClient, account);
                 FileSystemManager.CurrentFolder.Content.Add(name, file);
             }
 
             if (Directory.Exists(fileToUploadPath))
             {
+                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name))
+                {
+                    Console.WriteLine("Folder with this name already exists. You can delete it manually and then upload, rename it or upload in another folder.");
+                    return;
+                }
                 var folder = UploadFolder(pathToUpload, fileToUploadPath, yandexClient, account,
                     FileSystemManager.CurrentFolder);
                 if (folder != null)
