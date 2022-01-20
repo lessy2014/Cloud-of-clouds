@@ -13,7 +13,7 @@ namespace COC.Domain
         public static Folder Root;
         public string Path { get; set; }
         public string Name { get; set; }
-        public Account Account { get; }
+        public Account Account { get; set; }
 
         public Folder ParentFolder;
 

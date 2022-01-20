@@ -74,7 +74,7 @@ namespace COC.Dropbox
 
         private async Task UploadSingleFile(string localPath, string remotePath, DropboxClient client)
         {
-            const int ChunkSize = 4096 * 4096;
+            const int ChunkSize = 4096 * 2048;
             using (var fileStream = File.Open(localPath, FileMode.Open))
             {
                 if (fileStream.Length <= ChunkSize)

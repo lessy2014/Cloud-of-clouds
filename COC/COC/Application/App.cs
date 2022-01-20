@@ -34,6 +34,7 @@ namespace COC.Application
 
         public static void Start()
         {
+            Console.WriteLine("Collecting data...");
             Initialize();
             var dataLoader = new DataLoader(TokenStorage.NameToAccount.Values.ToList());
             dataLoader.InitializeFileSystem();

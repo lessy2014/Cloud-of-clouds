@@ -16,7 +16,10 @@ namespace COC.Application
             var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var account in accounts)
             {
-                var accountFolder = new Folder($"Root/{account.AccountName}");
+                var accountFolder = new Folder($"Root/{account.AccountName}")
+                {
+                    Account = account
+                };
                 foreach (var serviceToken in account.ServicesTokens)
                 {
                     try

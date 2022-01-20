@@ -63,7 +63,7 @@ namespace COC.Application
                     ((Folder) Folder.Root.Content[accountName]).Content.ContainsKey(serviceName))
                 {
                     ((Folder) Folder.Root.Content[accountName]).Content.Remove(serviceName);
-                    if (accountName == FileSystemManager.CurrentFolder.Account.AccountName)
+                    if (accountName == FileSystemManager.CurrentFolder.Account?.AccountName)
                         FileSystemManager.CurrentFolder = Folder.Root;
                 }
             }
@@ -103,7 +103,7 @@ namespace COC.Application
             if (Folder.Root.Content.ContainsKey(accountName))
             {
                 Folder.Root.Content.Remove(accountName);
-                if (accountName == FileSystemManager.CurrentFolder.Account.AccountName)
+                if (FileSystemManager.CurrentFolder?.Account == null ||accountName == FileSystemManager.CurrentFolder?.Account?.AccountName)
                     FileSystemManager.CurrentFolder = Folder.Root;
                     
             }
