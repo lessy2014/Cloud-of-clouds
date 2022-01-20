@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using COC.Infrastructure;
+using COC.Domain;
 
 namespace COC.Application
 {
@@ -18,7 +18,7 @@ namespace COC.Application
             var service = splittedPath[2];
             var path = "/" + string.Join("/", splittedPath.Skip(3));
             var token = fileSystemUnit.Account.ServicesTokens[service];
-            var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
+            var isFile = fileSystemUnit.GetType() == typeof(File);
             Console.WriteLine(fileSystemUnit.Service.Downloader.DownloadFile(path, token, isFile));
         }
     }

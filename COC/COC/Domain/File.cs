@@ -3,7 +3,7 @@ using COC.Application;
 using COC.ConsoleInterface;
 using Ninject;
 
-namespace COC.Infrastructure
+namespace COC.Domain
 {
     public class File : IFileSystemUnit
     {
@@ -17,7 +17,7 @@ namespace COC.Infrastructure
         {
             Path = path;
             Name = path.Split('/').LastOrDefault();
-            Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
+            Service = path.Split('/')[2] == "dropbox" ? Program.Container.Get<Dropbox>() : Program.Container.Get<Yandex>();
             Account = account;
         }
     }

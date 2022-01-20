@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using COC.Application;
-using COC.Infrastructure;
+using COC.Domain;
 using YandexDisk.Client.Http;
 using YandexDisk.Client.Protocol;
 using Account = COC.Application.Account;

@@ -1,5 +1,5 @@
 using COC.Application;
-using COC.Infrastructure;
+using COC.Domain;
 using CommandLine;
 
 

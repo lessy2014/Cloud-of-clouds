@@ -1,7 +1,7 @@
 using COC.Application;
 using Ninject;
 
-namespace COC.Infrastructure
+namespace COC.Domain
 {
     public class Yandex: IService
     {

@@ -1,5 +1,5 @@
 using System;
-using COC.Infrastructure;
+using COC.Domain;
 
 namespace COC.ConsoleInterface
 {

@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using COC.Application;
-using COC.ConsoleInterface;
-using COC.Infrastructure;
+using COC.Domain;
 using Dropbox.Api;
 using Dropbox.Api.Files;
-using Ninject;
 using File = System.IO.File;
 using Task = System.Threading.Tasks.Task;
 
@@ -23,13 +21,13 @@ namespace COC.Dropbox
             if (File.Exists(fileToUploadPath))
             {
                 Console.WriteLine("Uploading " + name);
-                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name) && FileSystemManager.CurrentFolder.Content[name] is Infrastructure.File)
+                if (FileSystemManager.CurrentFolder.Content.ContainsKey(name) && FileSystemManager.CurrentFolder.Content[name] is Domain.File)
                 {
                     Console.WriteLine("File with this name already exists. You can delete it manually and then upload, rename it or upload in another folder.");
                     return;
                 }
                 Task.Run(() => UploadSingleFile(fileToUploadPath, pathToUpload, dropboxClient));
-                FileSystemManager.CurrentFolder.Content.Add(name, new Infrastructure.File(FileSystemManager.CurrentFolder.Path + '/' + name, account));
+                FileSystemManager.CurrentFolder.Content.Add(name, new Domain.File(FileSystemManager.CurrentFolder.Path + '/' + name, account));
             }
 
             if (Directory.Exists(fileToUploadPath))
@@ -67,7 +65,7 @@ namespace COC.Dropbox
                 var name = file.Split('\\').Last();
                 Console.WriteLine("Uploading " + name);
                 Task.Run(() => UploadSingleFile(file, pathToUpload + '/' + name, client));
-                var localFile = new Infrastructure.File(localFolder.Path + '/' + name, account);
+                var localFile = new Domain.File(localFolder.Path + '/' + name, account);
                 localFolder.Content.Add(name, localFile);
             }
 

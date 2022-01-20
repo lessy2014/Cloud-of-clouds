@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Chilkat;
-using Dropbox.Api;
 
 
 namespace COC.Application
@@ -12,7 +11,7 @@ namespace COC.Application
         
         public static readonly Dictionary<string, Account> NameToAccount = new Dictionary<string, Account>();
 
-        public static readonly List<Application.Account> Accounts = new List<Application.Account>();
+        public static readonly List<Account> Accounts = new List<Application.Account>();
 
         public static readonly OAuth2 DropboxOAuth2 = new OAuth2
         {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using COC.Application;
 using COC.ConsoleInterface;
-using COC.Infrastructure;
+using COC.Domain;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using File = COC.Infrastructure.File;
+using File = COC.Domain.File;
 
 namespace COC.Tests
 {
@@ -17,7 +17,7 @@ namespace COC.Tests
         [SetUp]
         public void SetUp()
         {
-            Program.container = App.ConfigureContainer();
+            Program.Container = App.ConfigureContainer();
             var account = new Account("Account1");
             root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             
@@ -116,7 +116,7 @@ namespace COC.Tests
         [SetUp]
         public void SetUp()
         {
-            Program.container = App.ConfigureContainer();
+            Program.Container = App.ConfigureContainer();
             var account = new Account("Account1");
             root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             Folder.Root = root;

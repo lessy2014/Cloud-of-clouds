@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using COC.Infrastructure;
+using COC.Domain;
 using File = System.IO.File;
 
 namespace COC.Application
@@ -25,7 +25,7 @@ namespace COC.Application
             if (splittedPath.Length > 3)
                 path = '/' + path;
             var account = fileSystemUnit.Account;
-            var isFile = fileSystemUnit.GetType() == typeof(Infrastructure.File);
+            var isFile = fileSystemUnit.GetType() == typeof(Domain.File);
             var fileName = fileToUploadPath.Split('\\').Last();
             if (isFile)
                 Console.WriteLine("You can't upload file into file");

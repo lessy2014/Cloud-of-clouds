@@ -1,6 +1,6 @@
 using COC.Application;
 
-namespace COC.Infrastructure
+namespace COC.Domain
 {
     public interface IFileSystemUnit
     {

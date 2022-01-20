@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using COC.ConsoleInterface;
-using COC.Infrastructure;
+using COC.Domain;
 
 namespace COC.Application
 {

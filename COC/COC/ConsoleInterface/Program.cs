@@ -1,19 +1,19 @@
 using System;
 using COC.Application;
-using COC.Infrastructure;
+using COC.Domain;
 using Ninject;
 
 namespace COC.ConsoleInterface
 {
     public static class Program
     {
-        public static bool isRunning = true;
-        public static StandardKernel container;
+        public static bool IsRunning = true;
+        public static StandardKernel Container;
         private static void Main(string[] args)
         {
-            container = App.ConfigureContainer();
+            Container = App.ConfigureContainer();
             App.Start();
-            while(isRunning)
+            while(IsRunning)
             {
                 Console.Write($"{FileSystemManager.CurrentFolder.Path}> ");
                 InputManager.ReadCommand();    

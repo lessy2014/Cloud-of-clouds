@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using COC.Application;
-using COC.Infrastructure;
+using COC.Domain;
 using CommandLine;
 
 namespace COC.ConsoleInterface

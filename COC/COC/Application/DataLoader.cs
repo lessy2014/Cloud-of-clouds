@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using COC.Dropbox;
-using COC.Infrastructure;
+using COC.Domain;
 using COC.Yandex;
 
 namespace COC.Application
@@ -16,13 +16,13 @@ namespace COC.Application
             var root = new Folder("Root", new Dictionary<string, IFileSystemUnit>());
             foreach (var account in accounts)
             {
-                var AccountFolder = new Folder($"Root/{account.AccountName}");
+                var accountFolder = new Folder($"Root/{account.AccountName}");
                 foreach (var serviceToken in account.ServicesTokens)
                 {
                     try
                     {
                         dataLoader = serviceToken.Key == "dropbox"? new DropboxDataLoader(): new YandexDataLoader();
-                        AccountFolder.Content.Add(serviceToken.Key,
+                        accountFolder.Content.Add(serviceToken.Key,
                             GetFolders(account, serviceToken.Value, dataLoader));
                     }
                     catch (AggregateException)
@@ -36,13 +36,13 @@ namespace COC.Application
                     }
                 }
 
-                AccountFolder.ParentFolder = root;
-                foreach (var folder in AccountFolder.Content.Values)
+                accountFolder.ParentFolder = root;
+                foreach (var folder in accountFolder.Content.Values)
                 {
-                    ((Folder) folder).ParentFolder = AccountFolder;
+                    ((Folder) folder).ParentFolder = accountFolder;
                 }
 
-                root.Content.Add(AccountFolder.Name, AccountFolder);
+                root.Content.Add(accountFolder.Name, accountFolder);
             }
 
             Folder.SetRoot(root);

@@ -4,7 +4,7 @@ using COC.Application;
 using COC.ConsoleInterface;
 using Ninject;
 
-namespace COC.Infrastructure
+namespace COC.Domain
 {
     public class Folder : IFileSystemUnit
     {
@@ -30,7 +30,7 @@ namespace COC.Infrastructure
             Path = path;
             Name = path.Split('/').LastOrDefault();
             if(path.Split('/').Length>2)
-                Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
+                Service = path.Split('/')[2] == "dropbox" ? Program.Container.Get<Dropbox>() : Program.Container.Get<Yandex>();
             Content = content;
         }
 
@@ -40,7 +40,7 @@ namespace COC.Infrastructure
             Name = path.Split('/').LastOrDefault();
             Content = content;
             if(path.Split('/').Length>2)
-                Service = path.Split('/')[2] == "dropbox" ? Program.container.Get<Dropbox>() : Program.container.Get<Yandex>();
+                Service = path.Split('/')[2] == "dropbox" ? Program.Container.Get<Dropbox>() : Program.Container.Get<Yandex>();
 
             Account = account;
         }

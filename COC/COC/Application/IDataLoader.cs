@@ -1,4 +1,4 @@
-using COC.Infrastructure;
+using COC.Domain;
 
 namespace COC.Application
 {

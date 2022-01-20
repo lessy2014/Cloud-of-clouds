@@ -7,7 +7,7 @@ namespace COC.ConsoleInterface
     {
         public void Execute()
         {
-            Program.isRunning = false;
+            Program.IsRunning = false;
         }
     }
 }

@@ -42,12 +42,12 @@ namespace COC.Application
         public static StandardKernel ConfigureContainer()
         {
             var container = new StandardKernel();
-            container.Bind<IDataLoader>().To<DropboxDataLoader>().WhenInjectedInto<Infrastructure.Dropbox>();
-            container.Bind<IDownloader>().To<DropboxDownloader>().WhenInjectedInto<Infrastructure.Dropbox>();
-            container.Bind<IUploader>().To<DropboxUploader>().WhenInjectedInto<Infrastructure.Dropbox>();
-            container.Bind<IDataLoader>().To<YandexDataLoader>().WhenInjectedInto<Infrastructure.Yandex>();
-            container.Bind<IDownloader>().To<YandexDownloader>().WhenInjectedInto<Infrastructure.Yandex>();
-            container.Bind<IUploader>().To<YandexUploader>().WhenInjectedInto<Infrastructure.Yandex>();
+            container.Bind<IDataLoader>().To<DropboxDataLoader>().WhenInjectedInto<Domain.Dropbox>();
+            container.Bind<IDownloader>().To<DropboxDownloader>().WhenInjectedInto<Domain.Dropbox>();
+            container.Bind<IUploader>().To<DropboxUploader>().WhenInjectedInto<Domain.Dropbox>();
+            container.Bind<IDataLoader>().To<YandexDataLoader>().WhenInjectedInto<Domain.Yandex>();
+            container.Bind<IDownloader>().To<YandexDownloader>().WhenInjectedInto<Domain.Yandex>();
+            container.Bind<IUploader>().To<YandexUploader>().WhenInjectedInto<Domain.Yandex>();
             return container;
         }
     }

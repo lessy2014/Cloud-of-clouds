@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using COC.Infrastructure;
+using COC.Domain;
 using File = System.IO.File;
 
 namespace COC.Application
@@ -22,7 +22,7 @@ namespace COC.Application
 
         public static void AddAccount(string serviceName, string accountName)
         {
-            Account account = null;
+            Account account;
             serviceName = serviceName.ToLower();
             string token;
             switch (serviceName)

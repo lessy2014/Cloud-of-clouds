@@ -1,10 +1,10 @@
 using System;
 
-namespace COC.Infrastructure
+namespace COC.Domain
 {
     public static class FileSystemManager
     {
-        private static string CurrentPath = "";
+        private static string currentPath = "";
         public static Folder CurrentFolder;
         public static int AccountsCount;
 
@@ -36,7 +36,6 @@ namespace COC.Infrastructure
                     return;
             }
 
-            // path = $"{CurrentFolder.Path}/{path}";
             var tempFolder = CurrentFolder;
             var splittedPath = SplitPath(path);
             if (splittedPath[0] != "*")
@@ -92,10 +91,10 @@ namespace COC.Infrastructure
         private static string[] SplitPath(string path)
         {
             if (path[0] != '/')
-                CurrentPath = path;
+                currentPath = path;
             else
-                CurrentPath += path;
-            return CurrentPath.Split('/');
+                currentPath += path;
+            return currentPath.Split('/');
         }
         
     }

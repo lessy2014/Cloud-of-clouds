@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace COC.ConsoleInterface
                 .WithParsed<ICommand>(command1 => command1.Execute());
         }
 
-        private static string[] HandleInput(string line)
+        private static IEnumerable<string> HandleInput(string line)
         {
             var elements = line.Split('\"');
             if (line.LastOrDefault() == '/')

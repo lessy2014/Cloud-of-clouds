@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using COC.Application;
-using COC.Infrastructure;
+using COC.Domain;
 using Dropbox.Api;
 using Account = COC.Application.Account;
 
@@ -9,7 +9,7 @@ namespace COC.Dropbox
 {
     public class DropboxDataLoader: IDataLoader
     {
-        public Folder GetFolders(Account account, string path, DropboxClient client)
+        private static Folder GetFolders(Account account, string path, DropboxClient client)
         {
             var metadataList = client.Files.ListFolderAsync(path).Result.Entries.ToList();
             var content = new Dictionary<string, IFileSystemUnit>();
@@ -21,7 +21,7 @@ namespace COC.Dropbox
                     content.Add(metadata.Name,folderInside);
                 }
                 else
-                    content.Add(metadata.Name, new Infrastructure.File($"Root/{account.AccountName}/dropbox{path}/{metadata.Name}", account));
+                    content.Add(metadata.Name, new Domain.File($"Root/{account.AccountName}/dropbox{path}/{metadata.Name}", account));
             }
             var folder =  new Folder($"Root/{account.AccountName}/dropbox{path}", content, account);
             foreach (var internalFolder in folder.Content.Values.Where(x => x is Folder)) // Добавляем для внутренних папок родительскую
